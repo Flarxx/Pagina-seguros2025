@@ -1,7 +1,5 @@
-# Directorio de dependencias de Node.js
+# Contenido del archivo .gitignore
 node_modules/
-
-# Archivos de caché y temporales de Python
 __pycache__/
 *.pyc
-
+db.sqlite3
