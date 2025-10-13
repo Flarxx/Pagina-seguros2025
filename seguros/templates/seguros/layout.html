@@ -1,0 +1,33 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Proyecto Django con Tailwind</title>
+    
+    <link href="{% static 'styles.css' %}" rel="stylesheet">
+    
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <nav class="bg-blue-600 p-4 shadow-lg">
+            <p class="text-white text-xl font-semibold">Django & Tailwind Demo</p>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-8">
+        <h1 class="text-3xl font-bold text-green-600 underline">
+            Hello world!
+        </h1>
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        {% block extra_js %}{% endblock %}
+    </footer>
+</body>
+</html>
