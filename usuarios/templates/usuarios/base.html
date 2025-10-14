@@ -1,56 +1,146 @@
-<!-- templates/base.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Sistema de Seguros</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sistema de Seguros{% endblock %}</title>
 
-  <!-- Navbar principal -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">SegurosOnline</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+    {# Enlace a tu archivo CSS de Tailwind generado #}
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    {# CDN de HTMX - la forma más fácil de incluirlo #}
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQGqfP6UZJmgVYg28vEwsKFE9JfRkLOkjXFHLYYsHygB9WsSVi4jw5XpXL" crossorigin="anonymous"></script>
+    {# Extensiones de HTMX útiles, si las necesitas #}
+    <script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 
-        <ul class="navbar-nav ms-auto">
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="#">Bienvenido, {{ user.username }}</a>
-            </li>
-            {% if user.is_staff %}
-              <li class="nav-item">
-                <a class="nav-link" href="#">Panel Admin</a>
-              </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
-            </li>
-          {% endif %}
-        </ul>
-      </div>
+    {% block head_extra %}{% endblock %}
+</head>
+{# hx-boost="true" para que HTMX gestione la navegación de enlaces y formularios automáticamente #}
+<body class="bg-gray-50 font-sans antialiased text-gray-800" hx-boost="true">
+
+    {# Navbar principal con diseño de Tailwind #}
+    <header class="bg-white shadow-sm sticky top-0 z-50"> {# sticky para que el navbar se mantenga arriba #}
+        <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
+            {# Enlaces de navegación izquierda (Pólizas, Es) #}
+            <nav class="hidden md:flex flex-row md:space-x-6 text-lg md:text-base font-medium order-2 md:order-1">
+                <a href="#" class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200">Pólizas</a>
+                <a href="#" class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200">Es</a>
+            </nav>
+
+            {# Logo y nombre de la marca (centrado en pantallas grandes) #}
+            <div class="flex-grow flex justify-center md:flex-grow-0 md:justify-start order-1 md:order-2">
+                <a href="{% url 'inicio' %}" class="flex items-center">
+                    <img src="{% static 'img/logo_estar_seguros.png' %}" alt="Logo Estar Seguros" class="h-12 mr-3"> {# Asumiendo un logo en static/img #}
+                    {# <span class="text-2xl font-bold text-gray-800 hover:text-green-600 transition-colors duration-200">Estar Seguros</span> #}
+                </a>
+            </div>
+            
+            {# Botón para menú móvil #}
+            <button class="md:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 order-3"
+                    hx-on::click="document.getElementById('mobile-menu').classList.toggle('hidden');">
+                <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+
+            {# Contenedor principal de la navegación (oculto en móviles por defecto) #}
+            {# order-3 para que esté a la derecha del logo en pantallas grandes #}
+            <div class="w-full md:flex md:items-center md:w-auto mt-4 md:mt-0 hidden md:order-3" id="mobile-menu">
+                {# Botones de acción (Quiero cotizar, Quiero pagar, Mi cuenta) #}
+                <div class="flex flex-col md:flex-row md:ml-auto mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4">
+                    <a href="#" class="px-5 py-2 text-sm font-semibold rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-200 text-center whitespace-nowrap">Quiero cotizar</a>
+                    <a href="#" class="px-5 py-2 text-sm font-semibold rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors duration-200 text-center whitespace-nowrap">Quiero pagar</a>
+                    <a href="#" class="px-5 py-2 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200 text-center whitespace-nowrap">Mi cuenta</a>
+                </div>
+
+                {# Enlaces de autenticación (Login/Logout/Registro) #}
+                <ul class="flex flex-col md:flex-row md:ml-4 mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <span class="block px-3 py-2 text-sm text-gray-600">Bienvenido, {{ user.username }}</span>
+                        </li>
+                        {% if user.is_staff %}
+                            <li class="nav-item">
+                                <a class="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors duration-200" href="{% url 'inicio_administrador' %}">Panel Admin</a>
+                            </li>
+                        {% endif %} {# <<<----- Faltaba este ENDIF #}
+                        <li class="nav-item">
+                            <a class="block px-3 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md transition-colors duration-200" href="{% url 'logout' %}">Cerrar sesión</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="block px-3 py-2 text-sm text-blue-600 hover:bg-blue-100 rounded-md transition-colors duration-200" href="{% url 'login' %}">Iniciar sesión</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="block px-3 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200" href="{% url 'registro' %}">Registrarse</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    {# Contenido dinámico del resto de tus páginas #}
+    <main class="container mx-auto px-4 py-8">
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {# Footer con información de contacto y enlaces #}
+    <footer class="bg-white shadow-inner mt-12 py-6">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-gray-600 text-sm">
+            <div class="flex items-center mb-4 md:mb-0">
+                <img src="https://via.placeholder.com/30x30/6EE7B7/FFFFFF?text=W" alt="WhatsApp" class="h-8 w-8 mr-2">
+                <span>Atención en línea</span>
+            </div>
+            <div class="text-lg font-bold text-gray-800 mb-4 md:mb-0">
+                <span class="text-green-500">0500</span> Estar Ok (3782765)
+            </div>
+            <div class="text-xs text-gray-400">
+                Privacidad - Términos
+            </div>
+        </div>
+    </footer>
+
+    {# Barra lateral izquierda de redes sociales #}
+    <div class="fixed left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-r-lg p-2 z-50">
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md" aria-label="Facebook">
+            <img src="{% static 'img/facebook.png' %}" alt="Facebook" class="h-6 w-6"> {# Reemplaza con tus iconos #}
+        </a>
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="WhatsApp">
+            <img src="{% static 'img/whatsapp.png' %}" alt="WhatsApp" class="h-6 w-6">
+        </a>
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="Instagram">
+            <img src="{% static 'img/instagram.png' %}" alt="Instagram" class="h-6 w-6">
+        </a>
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="LinkedIn">
+            <img src="{% static 'img/linkedin.png' %}" alt="LinkedIn" class="h-6 w-6">
+        </a>
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="Mi App">
+            <img src="{% static 'img/app.png' %}" alt="Mi App" class="h-6 w-6">
+        </a>
     </div>
-  </nav>
 
-  <!-- Contenido dinámico -->
-  <div class="container mt-4">
-    {% block content %}
-    {% endblock %}
-  </div>
+    {# Botón flotante de chat/ayuda #}
+    <div class="fixed bottom-4 right-4 z-50">
+        <button class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
+            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M21 16h-3V4H2v12h3v4l4-4h5.5l3.5 3.5V16zM9 11.5L6.5 9H5v2.5L6.5 14H8v-2.5L9 11.5zM14 11.5L11.5 9H10v2.5L11.5 14H13v-2.5L14 11.5z"></path>
+            </svg>
+        </button>
+    </div>
 
-  <!-- Bootstrap JS (opcional) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block scripts_extra %}{% endblock %}
 </body>
-</html>
+</html> 
