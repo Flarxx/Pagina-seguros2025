@@ -4,19 +4,23 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+
 # Vista de inicio general
 def inicio(request):
-    return render(request, 'seguros/base.html')
+    return render(request, 'usuarios/base.html')
+
 
 # Vista inicio para clientes (usuarios normales)
 @login_required
 def inicio_cliente(request):
     return render(request, 'cliente/inicio_cliente.html')
 
+
 # Vista inicio para administradores (solo para usuarios staff o superuser)
 @login_required
 def inicio_admin(request):
     return render(request, 'administrador/inicio_admin.html')
+
 
 # Vista de login general
 def login_view(request):
@@ -33,12 +37,13 @@ def login_view(request):
                 return redirect('inicio_cliente')        # Redirección a la vista cliente
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
-    return render(request, 'seguros/login.html')
+    return render(request, 'usuarios/login.html')
 
 
 def logout_view(request):
     logout(request)
     return redirect('login')
+
 
 def registro(request):
     if request.method == 'POST':
@@ -48,5 +53,4 @@ def registro(request):
         User.objects.create_user(username=username, email=email, password=password)
         messages.success(request, 'Usuario creado correctamente')
         return redirect('login')
-    return render(request, 'seguros/registro.html')
-
+    return render(request, 'usuarios/registro.html')

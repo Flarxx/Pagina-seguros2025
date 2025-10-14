@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SegurosConfig(AppConfig):
+class NotifiacionesConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'seguros'
+    name = 'notifiaciones'
