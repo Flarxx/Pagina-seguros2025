@@ -1,6 +1,5 @@
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
@@ -29,6 +28,8 @@ INSTALLED_APPS = [
     'usuarios',
     'crm',
     'notifiaciones',
+    # seguridad extra para sobre intentos con contraseñas aleatorias
+    'axes',
     ]
 
 MIDDLEWARE = [
@@ -39,6 +40,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+     # Seguridad por intentos fallidos
+    'axes.middleware.AxesMiddleware',
 ]
 
 ROOT_URLCONF = 'nucleo.urls'
@@ -113,3 +116,12 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Configuración de django-axes
+AXES_FAILURE_LIMIT = 3  # Máximo de intentos fallidos
+AXES_COOLOFF_TIME = 1  # En horas (bloqueo temporal)
+AXES_LOCKOUT_CALLABLE = None  # Puedes usar funciones personalizadas si luego quieres logs o alertas
+AXES_RESET_ON_SUCCESS = True  # Restablece el contador si inicia sesión correctamente
+AXES_ONLY_USER_FAILURES = True  # Bloquea por usuario, no por IP
+
