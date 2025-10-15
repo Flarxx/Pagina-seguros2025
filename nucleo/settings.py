@@ -125,3 +125,9 @@ AXES_LOCKOUT_CALLABLE = None  # Puedes usar funciones personalizadas si luego qu
 AXES_RESET_ON_SUCCESS = True  # Restablece el contador si inicia sesión correctamente
 AXES_ONLY_USER_FAILURES = True  # Bloquea por usuario, no por IP
 
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+

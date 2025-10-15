@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import PerfilForm
 
 # ----------------------------
 # Funciones de verificación de rol
@@ -69,3 +70,25 @@ def inicio_cliente(request):
 def inicio_admin(request):
     """Inicio para administradores"""
     return render(request, 'administrador/inicio_admin.html')
+
+
+# vista para que el usuario maneje su propia informacion 
+
+
+@login_required
+def perfil(request):
+    perfil = request.user.perfil
+    return render(request, 'usuarios/perfil.html', {'perfil': perfil})
+
+
+@login_required
+def editar_perfil(request):
+    perfil = request.user.perfil
+    if request.method == 'POST':
+        form = PerfilForm(request.POST, request.FILES, instance=perfil)
+        if form.is_valid():
+            form.save()
+            return redirect('perfil')
+    else:
+        form = PerfilForm(instance=perfil)
+    return render(request, 'usuarios/editar_perfil.html', {'form': form})

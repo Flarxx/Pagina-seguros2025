@@ -1,0 +1,17 @@
+{% extends 'nucleo/layout.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Mi Perfil</h2>
+    <p><strong>Usuario:</strong> {{ perfil.usuario.username }}</p>
+    <p><strong>Cédula:</strong> {{ perfil.cedula|default:"No registrada" }}</p>
+    <p><strong>Teléfono:</strong> {{ perfil.telefono|default:"No registrado" }}</p>
+    <p><strong>Dirección:</strong> {{ perfil.direccion|default:"No registrada" }}</p>
+    <p><strong>Fecha de nacimiento:</strong> {{ perfil.fecha_nacimiento|date:"d/m/Y"|default:"No registrada" }}</p>
+    {% if perfil.documento_id %}
+        <p><strong>Documento:</strong> <a href="{{ perfil.documento_id.url }}" target="_blank">Ver documento</a></p>
+    {% else %}
+        <p><strong>Documento:</strong> No subido</p>
+    {% endif %}
+    <a href="{% url 'editar_perfil' %}" class="btn btn-primary mt-3">Editar perfil</a>
+</div>
+{% endblock %}
