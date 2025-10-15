@@ -1,48 +1,60 @@
+{% extends 'usuarios/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Registro - VidaPlus</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
 
-<div class="register-box row g-0">
-    <div class="col-md-6 d-none d-md-block register-image"></div>
-    <div class="col-md-6 form-section">
-        <h2 class="brand-title mb-4">Crear cuenta en VidaPlus</h2>
+{% block title %}Registrarse{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
+        <div class="text-center">
+            <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+                Crea una nueva cuenta
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                ¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="font-medium text-green-600 hover:text-green-500">Inicia sesión aquí</a>
+            </p>
+        </div>
 
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-danger">
-                    {{ message }}
-                </div>
-            {% endfor %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
         {% endif %}
 
-        <form method="POST">
+        <form class="mt-8 space-y-6" method="POST">
             {% csrf_token %}
-            <div class="mb-3">
-                <label for="username" class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Tu nombre de usuario">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="id_username_reg" class="sr-only">Nombre de usuario</label>
+                    <input id="id_username_reg" name="username" type="text" autocomplete="username" required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+                           placeholder="Nombre de usuario">
+                </div>
+                <div>
+                    <label for="id_email_reg" class="sr-only">Email</label>
+                    <input id="id_email_reg" name="email" type="email" autocomplete="email" required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+                           placeholder="Dirección de email">
+                </div>
+                <div>
+                    <label for="id_password_reg" class="sr-only">Contraseña</label>
+                    <input id="id_password_reg" name="password" type="password" autocomplete="new-password" required
+                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
+                           placeholder="Contraseña">
+                </div>
             </div>
-            <div class="mb-3">
-                <label for="email" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="ejemplo@email.com">
-            </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Tu contraseña segura">
-            </div>
-            <button type="submit" class="btn btn-morado w-100 mt-3">Registrarse</button>
-        </form>
 
-        <div class="text-center mt-4">
-            <a href="{% url 'login' %}">¿Ya tienes cuenta? <strong>Inicia sesión</strong></a>
-        </div>
+            <div>
+                <button type="submit"
+                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    Registrarse
+                </button>
+            </div>
+        </form>
     </div>
 </div>
-
-</body>
-</html>
+{% endblock %}

@@ -19,9 +19,9 @@ def es_administrador(user):
 # ----------------------------
 # Vistas públicas
 # ----------------------------
-def inicio(request):
+def inicio(request):    
     """Página de inicio general"""
-    return render(request, 'usuarios/base.html')
+    return render(request, 'usuarios/inicio.html')
 
 def login_view(request):
     """Login general con redirección según rol"""

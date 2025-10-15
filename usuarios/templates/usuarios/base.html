@@ -1,146 +1,130 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Sistema de Seguros{% endblock %}</title>
+    {% load static %}
+      <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Sistema de Seguros{% endblock %}</title>
 
-    {# Enlace a tu archivo CSS de Tailwind generado #}
-    <link href="{% static 'css/output.css' %}" rel="stylesheet">
-    {# CDN de HTMX - la forma más fácil de incluirlo #}
-    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQGqfP6UZJmgVYg28vEwsKFE9JfRkLOkjXFHLYYsHygB9WsSVi4jw5XpXL" crossorigin="anonymous"></script>
-    {# Extensiones de HTMX útiles, si las necesitas #}
-    <script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
-    <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
+        {# Enlace a tu archivo CSS de Tailwind generado #}
+        <link href="{% static 'css/output.css' %}" rel="stylesheet">
+        
+        {# CDN de HTMX - la forma más fácil de incluirlo #}
+        <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQGqfP6UZJmgVYg28vEwsKFE9JfRkLOkjXFHLYYsHygB9WsSVi4jw5XpXL" crossorigin="anonymous"></script>
+        {# Extensiones de HTMX útiles, si las necesitas #}
+        <script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
+        <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 
-    {% block head_extra %}{% endblock %}
-</head>
-{# hx-boost="true" para que HTMX gestione la navegación de enlaces y formularios automáticamente #}
-<body class="bg-gray-50 font-sans antialiased text-gray-800" hx-boost="true">
+        {% block head_extra %}{% endblock %}
+    </head>
+    <body class="bg-gray-50 font-sans antialiased text-gray-800" hx-boost="true">
+        {# Navbar principal con diseño de Tailwind #}
+        <header class="bg-white shadow-sm sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between relative">
+                {# Enlaces de navegación izquierda (Pólizas, Es) #}
+                <nav class="hidden md:flex flex-row md:space-x-6 text-lg md:text-base font-medium order-2 md:order-1">
+                    {# ------ INICIO: Menú desplegable de Pólizas con HTMX ------ #}
+                    <div class="relative"> {# No necesitamos 'group' aquí #}
+                        <button class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200 flex items-center text-lg">
+                            Pólizas
+                            <svg class="ml-1 h-4 w-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                </nav>
 
-    {# Navbar principal con diseño de Tailwind #}
-    <header class="bg-white shadow-sm sticky top-0 z-50"> {# sticky para que el navbar se mantenga arriba #}
-        <div class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between">
-            {# Enlaces de navegación izquierda (Pólizas, Es) #}
-            <nav class="hidden md:flex flex-row md:space-x-6 text-lg md:text-base font-medium order-2 md:order-1">
-                <a href="#" class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200">Pólizas</a>
-                <a href="#" class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200">Es</a>
-            </nav>
-
-            {# Logo y nombre de la marca (centrado en pantallas grandes) #}
-            <div class="flex-grow flex justify-center md:flex-grow-0 md:justify-start order-1 md:order-2">
-                <a href="{% url 'inicio' %}" class="flex items-center">
-                    <img src="{% static 'img/logo_estar_seguros.png' %}" alt="Logo Estar Seguros" class="h-12 mr-3"> {# Asumiendo un logo en static/img #}
-                    {# <span class="text-2xl font-bold text-gray-800 hover:text-green-600 transition-colors duration-200">Estar Seguros</span> #}
-                </a>
-            </div>
-            
-            {# Botón para menú móvil #}
-            <button class="md:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 order-3"
-                    hx-on::click="document.getElementById('mobile-menu').classList.toggle('hidden');">
-                <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
-
-            {# Contenedor principal de la navegación (oculto en móviles por defecto) #}
-            {# order-3 para que esté a la derecha del logo en pantallas grandes #}
-            <div class="w-full md:flex md:items-center md:w-auto mt-4 md:mt-0 hidden md:order-3" id="mobile-menu">
-                {# Botones de acción (Quiero cotizar, Quiero pagar, Mi cuenta) #}
-                <div class="flex flex-col md:flex-row md:ml-auto mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4">
-                    <a href="#" class="px-5 py-2 text-sm font-semibold rounded-full bg-green-100 text-green-700 hover:bg-green-200 transition-colors duration-200 text-center whitespace-nowrap">Quiero cotizar</a>
-                    <a href="#" class="px-5 py-2 text-sm font-semibold rounded-full bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors duration-200 text-center whitespace-nowrap">Quiero pagar</a>
-                    <a href="#" class="px-5 py-2 text-sm font-semibold rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors duration-200 text-center whitespace-nowrap">Mi cuenta</a>
+                {# Logo y nombre de la marca (centrado en pantallas grandes) #}
+                <div class="flex-grow flex justify-center md:flex-grow-0 md:justify-start order-1 md:order-2">
+                    <a href="{% url 'inicio' %}" class="flex items-center">
+                        <img src="{% static 'img/logo.png' %}" alt="Logo Estar Seguros" class="h-40 mr-3">
+                    </a>
                 </div>
+                
+                {# Botón para menú móvil #}
+                <button class="md:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 order-3"
+                        hx-on::click="document.getElementById('mobile-menu').classList.toggle('hidden');">
+                    <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
 
-                {# Enlaces de autenticación (Login/Logout/Registro) #}
-                <ul class="flex flex-col md:flex-row md:ml-4 mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <span class="block px-3 py-2 text-sm text-gray-600">Bienvenido, {{ user.username }}</span>
-                        </li>
-                        {% if user.is_staff %}
-                            <li class="nav-item">
-                                <a class="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors duration-200" href="{% url 'inicio_administrador' %}">Panel Admin</a>
-                            </li>
-                        {% endif %} {# <<<----- Faltaba este ENDIF #}
-                        <li class="nav-item">
-                            <a class="block px-3 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md transition-colors duration-200" href="{% url 'logout' %}">Cerrar sesión</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="block px-3 py-2 text-sm text-blue-600 hover:bg-blue-100 rounded-md transition-colors duration-200" href="{% url 'login' %}">Iniciar sesión</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="block px-3 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200" href="{% url 'registro' %}">Registrarse</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </header>
-
-    {# Contenido dinámico del resto de tus páginas #}
-    <main class="container mx-auto px-4 py-8">
-        {% if messages %}
-            <div class="mb-4">
-                {% for message in messages %}
-                    <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% elif message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-blue-100 text-blue-700{% endif %}">
-                        {{ message }}
+                {# Contenedor principal de la navegación (oculto en móviles por defecto) #}
+                <div class="w-full md:flex md:items-center md:w-auto mt-4 md:mt-0 hidden md:order-3" id="mobile-menu">
+                    {# Botones de acción (Quiero cotizar, Quiero pagar, Mi cuenta) #}
+                    <div class="flex flex-col md:flex-row md:ml-auto mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4"> 
                     </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% block content %}
-        {% endblock %}
-    </main>
 
-    {# Footer con información de contacto y enlaces #}
-    <footer class="bg-white shadow-inner mt-12 py-6">
-        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-gray-600 text-sm">
-            <div class="flex items-center mb-4 md:mb-0">
-                <img src="https://via.placeholder.com/30x30/6EE7B7/FFFFFF?text=W" alt="WhatsApp" class="h-8 w-8 mr-2">
-                <span>Atención en línea</span>
+                    {# Enlaces de autenticación (Login/Logout/Registro) #}
+                    <ul class="flex flex-col md:flex-row md:ml-4 mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <span class="block px-3 py-2 text-sm text-gray-600">Bienvenido, {{ user.username }}</span>
+                            </li>
+                            {% if user.is_staff %}
+                                <li class="nav-item">
+                                    <a class="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors duration-200" href="{% url 'inicio_administrador' %}">Panel Admin</a>
+                                </li>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="block px-3 py-2 text-sm text-red-600 hover:bg-red-100 rounded-md transition-colors duration-200" href="{% url 'logout' %}">Cerrar sesión</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item border-purple-600 border-1 rounded-md">
+                                <a class="block px-5 text-lg text-purple-800  rounded-md transition-colors duration-200 font-semibold hover:text-black" href="">Quiero cotizar</a>
+                            </li>
+                            <li class="nav-item border-green-500 border-1 rounded-md">
+                                <a class="block px-5 text-lg text-green-800 rounded-md transition-colors duration-200 font-semibold hover:text-black" href="#">Quiero pagar</a>
+                            </li>
+                            <li class="nav-item border-gray-400 border-1 rounded-md">
+                                <a class="block px-3 text-lg text-gray-600 rounded-md transition-colors duration-200 font-semibold hover:text-black" href="{% url 'login' %}">Mi cuenta</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
             </div>
-            <div class="text-lg font-bold text-gray-800 mb-4 md:mb-0">
-                <span class="text-green-500">0500</span> Estar Ok (3782765)
-            </div>
-            <div class="text-xs text-gray-400">
-                Privacidad - Términos
-            </div>
-        </div>
-    </footer>
-
-    {# Barra lateral izquierda de redes sociales #}
-    <div class="fixed left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-r-lg p-2 z-50">
-        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md" aria-label="Facebook">
-            <img src="{% static 'img/facebook.png' %}" alt="Facebook" class="h-6 w-6"> {# Reemplaza con tus iconos #}
-        </a>
-        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="WhatsApp">
-            <img src="{% static 'img/whatsapp.png' %}" alt="WhatsApp" class="h-6 w-6">
-        </a>
-        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="Instagram">
-            <img src="{% static 'img/instagram.png' %}" alt="Instagram" class="h-6 w-6">
-        </a>
-        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="LinkedIn">
-            <img src="{% static 'img/linkedin.png' %}" alt="LinkedIn" class="h-6 w-6">
-        </a>
-        <a href="#" class="block p-2 hover:bg-gray-100 rounded-md mt-1" aria-label="Mi App">
-            <img src="{% static 'img/app.png' %}" alt="Mi App" class="h-6 w-6">
-        </a>
-    </div>
-
-    {# Botón flotante de chat/ayuda #}
-    <div class="fixed bottom-4 right-4 z-50">
-        <button class="bg-green-500 text-white p-4 rounded-full shadow-lg hover:bg-green-600 transition-colors duration-300">
-            <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M21 16h-3V4H2v12h3v4l4-4h5.5l3.5 3.5V16zM9 11.5L6.5 9H5v2.5L6.5 14H8v-2.5L9 11.5zM14 11.5L11.5 9H10v2.5L11.5 14H13v-2.5L14 11.5z"></path>
+        </header>
+            {% block content %}
+            {% endblock %}
+        </main>
+        {# Barra lateral izquierda de redes sociales - CON HEROICONS SVG #}
+            <div class="fixed left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-r-lg p-2 z-50">
+                <!-- Facebook (Path verificado como correcto) -->
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-lg" aria-label="Facebook">
+            <svg class="h-11 w-11 text-gray-500 hover:text-blue-600 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <!-- Icono de Facebook (F simplificada) -->
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>
             </svg>
-        </button>
-    </div>
-
-
-    {% block scripts_extra %}{% endblock %}
-</body>
-</html> 
+        </a>
+                <!-- WhatsApp  -->
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-lg mt-1" aria-label="WhatsApp">
+    <svg class="h-11 w-11 text-gray-500 hover:text-green-500 transition-colors duration-200" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M26.576 5.363c-2.69-2.69-6.406-4.354-10.511-4.354-8.209 0-14.865 6.655-14.865 14.865 0 2.732 0.737 5.291 2.022 7.491l-0.038-0.070-2.109 7.702 7.879-2.067c2.051 1.139 4.498 1.809 7.102 1.809h0.006c8.209-0.003 14.862-6.659 14.862-14.868 0-4.103-1.662-7.817-4.349-10.507l0 0zM16.062 28.228h-0.005c-0 0-0.001 0-0.001 0-2.319 0-4.489-0.64-6.342-1.753l0.056 0.031-0.451-0.267-4.675 1.227 1.247-4.559-0.294-0.467c-1.185-1.862-1.889-4.131-1.889-6.565 0-6.822 5.531-12.353 12.353-12.353s12.353 5.531 12.353 12.353c0 6.822-5.53 12.353-12.353 12.353h-0zM22.838 18.977c-0.371-0.186-2.197-1.083-2.537-1.208-0.341-0.124-0.589-0.185-0.837 0.187-0.246 0.371-0.958 1.207-1.175 1.455-0.216 0.249-0.434 0.279-0.805 0.094-1.15-0.466-2.138-1.087-2.997-1.852l0.010 0.009c-0.799-0.74-1.484-1.587-2.037-2.521l-0.028-0.052c-0.216-0.371-0.023-0.572 0.162-0.757 0.167-0.166 0.372-0.434 0.557-0.65 0.146-0.179 0.271-0.384 0.366-0.604l0.006-0.017c0.043-0.087 0.068-0.188 0.068-0.296 0-0.131-0.037-0.253-0.101-0.357l0.002 0.003c-0.094-0.186-0.836-2.014-1.145-2.758-0.302-0.724-0.609-0.625-0.836-0.637-0.216-0.010-0.464-0.012-0.712-0.012-0.395 0.010-0.746 0.188-0.988 0.463l-0.001 0.002c-0.802 0.761-1.3 1.834-1.3 3.023 0 0.026 0 0.053 0.001 0.079l-0-0.004c0.131 1.467 0.681 2.784 1.527 3.857l-0.012-0.015c1.604 2.379 3.742 4.282 6.251 5.564l0.094 0.043c0.548 0.248 1.25 0.513 1.968 0.74l0.149 0.041c0.442 0.14 0.951 0.221 1.479 0.221 0.303 0 0.601-0.027 0.889-0.078l-0.031 0.004c1.069-0.223 1.956-0.868 2.497-1.749l0.009-0.017c0.165-0.366 0.261-0.793 0.261-1.242 0-0.185-0.016-0.366-0.047-0.542l0.003 0.019c-0.092-0.155-0.34-0.247-0.712-0.434z"/>
+    </svg>
+</a>
+                <!-- Instagram (Path Corregido) -->
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-lg mt-1" aria-label="Instagram">
+            <svg class="h-11 w-11 text-gray-500 hover:text-pink-600 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <!-- Icono de Instagram (Cámara/Cuadrado, más fiel) -->
+                <path d="M12 2c2.72 0 3.064.01 4.12.06 1.066.046 1.794.218 2.428.465.667.258 1.15.65 1.616 1.116.466.466.858.948 1.116 1.616.247.634.419 1.362.465 2.428.05 1.056.06 1.399.06 4.12s-.01 3.064-.06 4.12c-.046 1.066-.218 1.794-.465 2.428-.258.667-.65 1.15-1.116 1.616-.466.466-.948.858-1.616 1.116-.634.247-1.362.419-2.428.465-1.056.05-1.399.06-4.12.06s-3.064-.01-4.12-.06c-1.066-.046-1.794-.218-2.428-.465-.667-.258-1.15-.65-1.616-1.116-.466-.466-.858-.948-1.116-1.616-.247-.634-.419-1.362-.465-2.428-.05-1.056-.06-1.399-.06-4.12s.01-3.064.06-4.12c.046-1.066.218-1.794.465-2.428.258-.667.65-1.15 1.116-1.616.466-.466.948-.858 1.616-1.116.634-.247 1.362-.419 2.428-.465C8.936 2.01 9.28 2 12 2zm0 4a6 6 0 100 12 6 6 0 000-12zm-4 6a4 4 0 118 0 4 4 0 01-8 0zm7-5a1 1 0 10-2 0 1 1 0 002 0z"/>
+            </svg>
+        </a>
+        
+        <!-- LinkedIn (Path Corregido) -->
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-lg mt-1" aria-label="LinkedIn">
+            <svg class="h-11 w-11 text-gray-500 hover:text-blue-800 transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <!-- Icono de LinkedIn (Insignia 'in' en cuadrado) -->
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.367-4-3.292-4 0v5.604h-3v-11h3v1.765c1.397-2.358 5-2.277 5 2.249v6.986z"/>
+            </svg>
+        </a>
+        
+        <!-- Twitter (Reemplazo por icono 'X' más fiel) -->
+        <a href="#" class="block p-2 hover:bg-gray-100 rounded-lg mt-1" aria-label="Twitter X">
+            <svg class="h-8 w-8 text-gray-500 hover:text-black transition-colors duration-200" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <!-- Icono de Twitter / X (Cruz moderna) -->
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.527 10.74h-6.884l-4.739-5.967L6.464 21.75H2.525l7.794-8.892L1.5 2.25h8.318l5.24 7.557L18.244 2.25zM17.29 20.354L19.293 20.3H16.48l-3.337-4.147L8.914 4.354H6.91l6.126 7.643 4.254 5.28z"/>
+            </svg>
+        </a>
+            </div>  
+        {% block scripts_extra %}{% endblock %}
+    </body>
+    </html>
