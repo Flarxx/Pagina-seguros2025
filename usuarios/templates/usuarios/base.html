@@ -1,21 +1,21 @@
     {% load static %}
-      <!DOCTYPE html>
+    <!DOCTYPE html>
     <html lang="es">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Sistema de Seguros{% endblock %}</title>
-
-        {# Enlace a tu archivo CSS de Tailwind generado #}
+            {# Enlace a tu archivo CSS de Tailwind generado (UNA SOLA VEZ) #}
         <link href="{% static 'css/output.css' %}" rel="stylesheet">
-        
-        {# CDN de HTMX - la forma más fácil de incluirlo #}
+            {# CDN de Swiper CSS #}
+        <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" /> 
+            {# CDN de HTMX - la forma más fácil de incluirlo (UNA SOLA VEZ) #}
         <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQGqfP6UZJmgVYg28vEwsKFE9JfRkLOkjXFHLYYsHygB9WsSVi4jw5XpXL" crossorigin="anonymous"></script>
-        {# Extensiones de HTMX útiles, si las necesitas #}
+            {# Extensiones de HTMX útiles, si las necesitas (UNA SOLA VEZ) #}
         <script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
         <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
-
-        {% block head_extra %}{% endblock %}
+            {# Punto de extensión para contenido extra en el head de plantillas hijas #}
+    {% block head_extra %}{% endblock %}
     </head>
     <body class="bg-gray-50 font-sans antialiased text-gray-800" hx-boost="true">
         {# Navbar principal con diseño de Tailwind #}
@@ -26,7 +26,7 @@
                     {# ------ INICIO: Menú desplegable de Pólizas con HTMX ------ #}
                     <div class="relative"> {# No necesitamos 'group' aquí #}
                         <button class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200 flex items-center text-lg">
-                            Pólizas
+                            Nuestras Pólizas
                             <svg class="ml-1 h-4 w-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -70,23 +70,21 @@
                             </li>
                         {% else %}
                             <li class="nav-item border-purple-600 border-1 rounded-md">
-                                <a class="block px-5 text-lg text-purple-800  rounded-md transition-colors duration-200 font-semibold hover:text-black" href="">Quiero cotizar</a>
+                                <a class="block px-5 text-lg text-purple-800  rounded-md transition-colors duration-200 font-semibold hover:text-black text-center" href="">Quiero cotizar</a>
                             </li>
                             <li class="nav-item border-green-500 border-1 rounded-md">
-                                <a class="block px-5 text-lg text-green-800 rounded-md transition-colors duration-200 font-semibold hover:text-black" href="#">Quiero pagar</a>
+                                <a class="block px-5 text-lg text-green-800 rounded-md transition-colors duration-200 font-semibold hover:text-black text-center" href="#">Quiero pagar</a>
                             </li>
                             <li class="nav-item border-gray-400 border-1 rounded-md">
-                                <a class="block px-3 text-lg text-gray-600 rounded-md transition-colors duration-200 font-semibold hover:text-black" href="{% url 'login' %}">Mi cuenta</a>
+                                <a class="block px-3 text-lg text-gray-600 rounded-md transition-colors duration-200 font-bold hover:text-black text-center" href="{% url 'login' %}">Mi cuenta</a>
                             </li>
                         {% endif %}
                     </ul>
                 </div>
             </div>
         </header>
-            {% block content %}
-            {% endblock %}
-        </main>
-        {# Barra lateral izquierda de redes sociales - CON HEROICONS SVG #}
+        <main>
+            {# Barra lateral izquierda de redes sociales - CON HEROICONS SVG #}
             <div class="fixed left-0 top-1/2 -translate-y-1/2 bg-white shadow-lg rounded-r-lg p-2 z-50">
                 <!-- Facebook (Path verificado como correcto) -->
         <a href="#" class="block p-2 hover:bg-gray-100 rounded-lg" aria-label="Facebook">
@@ -124,7 +122,60 @@
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.527 10.74h-6.884l-4.739-5.967L6.464 21.75H2.525l7.794-8.892L1.5 2.25h8.318l5.24 7.557L18.244 2.25zM17.29 20.354L19.293 20.3H16.48l-3.337-4.147L8.914 4.354H6.91l6.126 7.643 4.254 5.28z"/>
             </svg>
         </a>
-            </div>  
+            </div>
+            <!-- SWIPER: slider principal -->
+<div class="swiper-slide relative bg-white overflow-hidden">
+    
+    <div class="absolute inset-0 z-0">
+        <img src="{% static 'img/prueba.png' %}" 
+             alt="Mujer abrazando coche" 
+             class="w-full h-full object-cover opacity-50 md:opacity-100" />
+        
+        </div>
+
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-24 py-14">
+        <div class="flex items-center">
+            <div class="md:w-1/2 w-full z-20 flex flex-col items-center md:items-start text-center md:text-left">
+                <h1 class="text-5xl sm:text-6xl md:text-[86px] leading-[0.9] font-extrabold text-gray-800">
+                    ¿Qué quiero<br class="hidden md:block" /> <span class="block">asegurar?</span>
+                </h1>
+
+                <div class="mt-10 w-full">
+                    <div class="mx-auto md:mx-0 flex flex-wrap justify-center md:justify-start gap-6">
+                        <a href="#" class="flex flex-col items-center w-36">
+                            <div class="bg-white p-4 rounded-xl shadow-lg">
+                                <img src="{% static 'img/icon-car.png' %}" alt="Mi carro" class="w-14 h-14 object-contain">
+                            </div>
+                            <span class="mt-3 px-4 py-2 rounded-full bg-sky-200 text-sky-800 text-sm font-semibold">Mi carro</span>
+                        </a>
+
+                        <a href="#" class="flex flex-col items-center w-36">
+                            <div class="bg-white p-4 rounded-xl shadow-lg">
+                                <img src="{% static 'img/family-icon.png' %}" alt="Mi familia" class="w-14 h-14 object-contain">
+                            </div>
+                            <span class="mt-3 px-4 py-2 rounded-full bg-pink-200 text-pink-800 text-sm font-semibold">Mi familia</span>
+                        </a>
+
+                        <a href="#" class="flex flex-col items-center w-36">
+                            <div class="bg-white p-4 rounded-xl shadow-lg">
+                                <img src="{% static 'img/store-icon.png' %}" alt="Mi negocio" class="w-14 h-14 object-contain">
+                            </div>
+                            <span class="mt-3 px-4 py-2 rounded-full bg-amber-200 text-amber-800 text-sm font-semibold">Mi negocio</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+    </div>
+</div>
+            {% block content %}
+            {% endblock %}
+        </main>  
         {% block scripts_extra %}{% endblock %}
+        <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+        <!-- Tu script principal -->
+        <script src="{% static 'js/base.js' %}"></script>
     </body>
     </html>
