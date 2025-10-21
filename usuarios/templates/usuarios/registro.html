@@ -1,67 +1,77 @@
 {% extends 'usuarios/base.html' %}
 {% load static %}
 
-{% block title %}Registrarse{% endblock %}
+{% block title %}Registro - Portal de Clientes{% endblock %}
 
 {% block content %}
+<div class="flex items-start justify-center min-h-screen bg-gray-50 py-10 px-6 lg:px-8">
 
-<div class="flex items-start justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#63e_100%)]">
-    <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
-        <div class="text-center">
-            <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
-                Crea una nueva cuenta
-            </h2>
-            <p class="mt-2 text-sm text-gray-600">
-                ¿Ya tienes una cuenta?
-                <a href="{% url 'login' %}" class="font-medium text-purple-600 hover:text-purple-500">
-                    Inicia sesión aquí
-                </a>
-            </p>
+  <!-- CONTENEDOR PRINCIPAL -->
+  <div class="max-w-5xl w-full grid md:grid-cols-2 bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+
+    <!-- PANEL IZQUIERDO -->
+    <div class="hidden md:flex flex-col justify-center items-center bg-blue-900 text-white p-10">
+      <img src="{% static 'img/protege.jpg' %}" alt="Seguridad" class="w-64 h-64 object-contain mb-6">
+      <h2 class="text-2xl font-semibold mb-3">Tu seguridad es nuestra prioridad</h2>
+      <p class="text-blue-100 text-sm text-center leading-relaxed">
+        Regístrate para acceder a nuestros servicios personalizados y gestionar tus datos con total confianza.
+      </p>
+    </div>
+
+    <!-- PANEL DERECHO (FORMULARIO) -->
+    <div class="p-8 md:p-12 space-y-6">
+      <div class="text-center">
+        <h2 class="text-2xl font-bold text-gray-900">Crea tu cuenta</h2>
+        <p class="mt-2 text-sm text-gray-600">
+          ¿Ya tienes una cuenta?
+          <a href="{% url 'login' %}" class="text-blue-700 font-medium hover:underline">Inicia sesión</a>
+        </p>
+      </div>
+
+      {% if messages %}
+      <div>
+        {% for message in messages %}
+          <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="POST" class="space-y-5">
+        {% csrf_token %}
+        <div>
+          <label for="id_username_reg" class="block text-sm font-medium text-gray-700 mb-1">Nombre de usuario</label>
+          <input id="id_username_reg" name="username" type="text" required
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                 placeholder="Tu nombre de usuario">
         </div>
 
-        {% if messages %}
-            <div class="mb-4">
-                {% for message in messages %}
-                    <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <div>
+          <label for="id_email_reg" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+          <input id="id_email_reg" name="email" type="email" required
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                 placeholder="ejemplo@correo.com">
+        </div>
 
-        <form method="POST">
-            {% csrf_token %}
-            <div class="space-y-4">
-                <div>
-                    <input id="id_username_reg" name="username" type="text" autocomplete="username" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 
-                               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                        placeholder="Nombre de usuario">
-                </div>
-                <div>
-                    <input id="id_email_reg" name="email" type="email" autocomplete="email" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 
-                               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                        placeholder="Correo electrónico">
-                </div>
-                <div>
-                    <input id="id_password_reg" name="password" type="password" autocomplete="new-password" required
-                        class="w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 
-                               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                        placeholder="Contraseña">
-                </div>
-            </div>
+        <div>
+          <label for="id_password_reg" class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+          <input id="id_password_reg" name="password" type="password" required
+                 class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                 placeholder="********">
+        </div>
 
-            <div class="mt-6">
-                <button type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium 
-                           rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none 
-                           focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition">
-                    Registrarse
-                </button>
-            </div>
-        </form>
+        <div class="pt-4">
+          <button type="submit"
+                  class="w-full bg-blue-800 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-900 transition duration-200">
+            Crear cuenta
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
+  <div class="fixed bottom-0 left-0 w-full bg-white h-35">
+  <!-- Espacio vacío, puedes añadir contenido más tarde -->
 </div>
-<div class="fixed bottom-0 left-0 w-full h-1/6 bg-white z-0"></div>
+</div>
 {% endblock %}
