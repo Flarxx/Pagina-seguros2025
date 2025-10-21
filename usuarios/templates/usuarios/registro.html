@@ -4,57 +4,64 @@
 {% block title %}Registrarse{% endblock %}
 
 {% block content %}
-<div class="flex items-center justify-center min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+
+<div class="flex items-start justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8 bg-white [background:radial-gradient(125%_125%_at_50%_10%,#fff_40%,#63e_100%)]">
     <div class="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
         <div class="text-center">
             <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
                 Crea una nueva cuenta
             </h2>
             <p class="mt-2 text-sm text-gray-600">
-                ¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="font-medium text-green-600 hover:text-green-500">Inicia sesión aquí</a>
+                ¿Ya tienes una cuenta?
+                <a href="{% url 'login' %}" class="font-medium text-purple-600 hover:text-purple-500">
+                    Inicia sesión aquí
+                </a>
             </p>
         </div>
 
         {% if messages %}
             <div class="mb-4">
                 {% for message in messages %}
-                    <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-blue-100 text-blue-700{% endif %}">
+                    <div class="p-3 rounded-md {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
                         {{ message }}
                     </div>
                 {% endfor %}
             </div>
         {% endif %}
 
-        <form class="mt-8 space-y-6" method="POST">
+        <form method="POST">
             {% csrf_token %}
-            <div class="rounded-md shadow-sm -space-y-px">
+            <div class="space-y-4">
                 <div>
-                    <label for="id_username_reg" class="sr-only">Nombre de usuario</label>
                     <input id="id_username_reg" name="username" type="text" autocomplete="username" required
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                           placeholder="Nombre de usuario">
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 
+                               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Nombre de usuario">
                 </div>
                 <div>
-                    <label for="id_email_reg" class="sr-only">Email</label>
                     <input id="id_email_reg" name="email" type="email" autocomplete="email" required
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                           placeholder="Dirección de email">
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 
+                               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Correo electrónico">
                 </div>
                 <div>
-                    <label for="id_password_reg" class="sr-only">Contraseña</label>
                     <input id="id_password_reg" name="password" type="password" autocomplete="new-password" required
-                           class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-green-500 focus:border-green-500 focus:z-10 sm:text-sm"
-                           placeholder="Contraseña">
+                        class="w-full border border-gray-300 rounded-md px-3 py-2 placeholder-gray-500 text-gray-900 
+                               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                        placeholder="Contraseña">
                 </div>
             </div>
 
-            <div>
+            <div class="mt-6">
                 <button type="submit"
-                        class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                    class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium 
+                           rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none 
+                           focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition">
                     Registrarse
                 </button>
             </div>
         </form>
     </div>
 </div>
+<div class="fixed bottom-0 left-0 w-full h-1/6 bg-white z-0"></div>
 {% endblock %}
