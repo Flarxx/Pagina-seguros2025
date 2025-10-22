@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import PerfilForm
+from .models import Perfil
 
 # ----------------------------
 # Funciones de verificación de rol
@@ -20,7 +21,7 @@ def es_administrador(user):
 # Vistas públicas
 # ----------------------------
 def inicio(request):    
-    """Página de inicio general"""
+    """Página de inicio general"""  
     return render(request, 'usuarios/inicio.html')
 
 def login_view(request):
@@ -78,12 +79,14 @@ def inicio_admin(request):
 @login_required
 def perfil(request):
     perfil = request.user.perfil
-    return render(request, 'usuarios/perfil.html', {'perfil': perfil})
+    return render(request, 'cliente/perfil.html', {'perfil': perfil})
 
 
 @login_required
+@login_required
 def editar_perfil(request):
-    perfil = request.user.perfil
+    perfil, created = Perfil.objects.get_or_create(usuario=request.user)
+
     if request.method == 'POST':
         form = PerfilForm(request.POST, request.FILES, instance=perfil)
         if form.is_valid():
@@ -91,4 +94,5 @@ def editar_perfil(request):
             return redirect('perfil')
     else:
         form = PerfilForm(instance=perfil)
-    return render(request, 'usuarios/editar_perfil.html', {'form': form})
+
+    return render(request, 'cliente/editar_perfil.html', {'form': form})

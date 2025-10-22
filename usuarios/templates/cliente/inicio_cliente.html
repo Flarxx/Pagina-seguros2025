@@ -1,59 +1,56 @@
-<!-- templates/base.html -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Sistema de Seguros</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Bootstrap CSS (opcional) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+{% extends 'usuarios/base.html' %}
+{% block title %}Inicio - Cliente{% endblock %}
 
-  <!-- Navbar principal -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">SegurosOnline</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-              data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-              aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
+{% block content %}
+<div class="max-w-6xl mx-auto py-12 px-6">
+  <h1 class="text-3xl font-bold text-purple-700 mb-8 text-center">
+    ¡Bienvenido, {{ user.first_name|default:user.username }}!
+  </h1>
 
-        <ul class="navbar-nav ms-auto">
-          {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="#">Bienvenido, {{ user.username }}</a>
-            </li>
-            {% if user.is_staff %}
-              <li class="nav-item">
-                <a class="nav-link" href="#">Panel Admin</a>
-              </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'registro' %}">Registrarse</a>
-            </li>
-          {% endif %}
-        </ul>
+  <p class="text-gray-600 text-center mb-10">
+    Este es tu panel principal. Aquí puedes acceder rápidamente a tus servicios y gestionar tu información.
+  </p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Perfil -->
+    <a href="{% url 'perfil' %}" 
+       class="group bg-white border border-gray-200 rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+      <div class="text-purple-700 text-4xl mb-3 text-center">
+        <i class="fa-solid fa-user"></i>
       </div>
-    </div>
-  </nav>
+      <h3 class="text-lg font-semibold text-gray-800 text-center group-hover:text-purple-700">Mi Perfil</h3>
+      <p class="text-sm text-gray-500 text-center mt-2">Consulta o edita tu información personal</p>
+    </a>
 
-  <!-- Contenido dinámico -->
-  <div class="container mt-4">
-    {% block content %}
-    {% endblock %}
+    <!-- Pólizas -->
+    <a href="{% url 'catalogo_polizas' %}" 
+       class="group bg-white border border-gray-200 rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+      <div class="text-green-600 text-4xl mb-3 text-center">
+        <i class="fa-solid fa-file-shield"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-800 text-center group-hover:text-green-600">Mis Pólizas</h3>
+      <p class="text-sm text-gray-500 text-center mt-2">Consulta tus pólizas activas o vencidas</p>
+    </a>
+
+    <!-- Pagos -->
+    <a href="#" 
+       class="group bg-white border border-gray-200 rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+      <div class="text-blue-600 text-4xl mb-3 text-center">
+        <i class="fa-solid fa-credit-card"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-800 text-center group-hover:text-blue-600">Pagos</h3>
+      <p class="text-sm text-gray-500 text-center mt-2">Verifica tus pagos o realiza uno nuevo</p>
+    </a>
+
+    <!-- Reclamos -->
+    <a href="#" 
+       class="group bg-white border border-gray-200 rounded-2xl shadow-md p-6 hover:shadow-xl transition">
+      <div class="text-red-600 text-4xl mb-3 text-center">
+        <i class="fa-solid fa-headset"></i>
+      </div>
+      <h3 class="text-lg font-semibold text-gray-800 text-center group-hover:text-red-600">Reclamos</h3>
+      <p class="text-sm text-gray-500 text-center mt-2">Haz seguimiento a tus reclamos</p>
+    </a>
   </div>
-
-  <!-- Bootstrap JS (opcional) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}

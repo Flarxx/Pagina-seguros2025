@@ -1,0 +1,51 @@
+{% extends 'usuarios/base.html' %}
+{% block title %}Dashboard de Pólizas{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-10 px-6">
+
+  <!-- SECCIÓN 1: Catálogo de pólizas disponibles -->
+  <div class="mb-12">
+    <h2 class="text-2xl font-semibold mb-4">Catálogo de Pólizas Disponibles</h2>
+        <form method="post" action="{% url 'adquirir_poliza' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded mt-2 hover:bg-blue-700">
+        Adquirir
+    </button>
+</form>
+  </div>
+
+  <!-- SECCIÓN 2: Pólizas adquiridas -->
+  <div>
+    <h2 class="text-2xl font-semibold mb-4">Mis Pólizas Adquiridas</h2>
+    {% if polizas %}
+      <table class="min-w-full border border-gray-200">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 text-left"># Póliza</th>
+            <th class="px-4 py-2 text-left">Tipo</th>
+            <th class="px-4 py-2 text-left">Prima</th>
+            <th class="px-4 py-2 text-left">Estado</th>
+            <th class="px-4 py-2 text-left">Fecha Fin</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for poliza in polizas %}
+            <tr class="border-t">
+              <td class="px-4 py-2">{{ poliza.poliza_numero }}</td>
+              <td class="px-4 py-2">{{ poliza.get_tipo_display }}</td>
+              <td class="px-4 py-2">{{ poliza.prima }}</td>
+              <td class="px-4 py-2">{{ poliza.get_estado_display }}</td>
+              <td class="px-4 py-2">{{ poliza.fecha_fin|default:"-" }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p class="text-gray-600">No tienes pólizas adquiridas aún.</p>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}
