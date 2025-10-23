@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PANEL ADMINISTRADOR CLIENTE{% endblock %}</title>
+    <!-- Tailwind -->
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    <!-- CSS principal -->
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.10.0"></script>
+
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Navbar opcional -->
+    <header>
+        {% block navbar %}
+        <nav class="flex bg-black text-white shadow p-4">
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Acerca</a></li>
+            </ul>
+        </nav>
+        {% endblock %}
+    </header>
+
+    <!-- Contenido principal -->
+    <main>
+        {% block content %}
+        <h1>Bienvenido a mi proyecto Django</h1>
+        {% endblock %}
+    </main>
+
+    <!-- Footer opcional -->
+    <footer>
+        {% block footer %}
+        <p>&copy; {% now "Y" %} Mi Proyecto. Todos los derechos reservados.</p>
+        {% endblock %}
+    </footer>
+
+    <!-- Scripts JS -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block scripts_extra %}{% endblock %}
+
+</body>
+</html>
