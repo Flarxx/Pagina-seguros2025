@@ -5,46 +5,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}PANEL ADMINISTRADOR CLIENTE{% endblock %}</title>
-    <!-- Tailwind -->
+
+    <!-- Tailwind CSS -->
     <link href="{% static 'css/output.css' %}" rel="stylesheet" />
-    <!-- CSS principal -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.10.0"></script>
+
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
 
     {% block head_extra %}{% endblock %}
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="bg-gray-100 font-sans antialiased flex rounded-br-2xl"> 
+    <!-- Sidebar -->
+    <nav class="w-64 bg-gray-800 text-gray-700 p-4 h-screen fixed shadow-lg rounded-tl-2xl rounded-bl-2xl"> 
+        <div class="mb-8 flex flex-col items-center py-4 border-b border-gray-700">
+            <img src="{% static 'img/logo1.png' %}" alt="Logo Admin Panel" class="h-16 mb-2">
+            <span class="text-lg font-semibold text-white">CLIENTE PANEL</span>
+        </div>
 
-    <!-- Navbar opcional -->
-    <header>
-        {% block navbar %}
-        <nav class="flex bg-black text-white shadow p-4">
-            <ul>
-                <li><a href="#">Inicio</a></li>
-                <li><a href="#">Acerca</a></li>
-            </ul>
-        </nav>
-        {% endblock %}
-    </header>
+        <ul class="space-y-2"> 
+            <!-- Grupo 1 -->
+            <li>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-dashboard-line text-xl"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-file-shield-2-line text-xl"></i>
+                    <span>Mis Pólizas</span>
+                </a>
+            </li>
+            <li class="border-t border-gray-700 pt-3">
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-calculator-line text-xl"></i>
+                    <span>Cotizaciones</span>
+                </a>
+            </li>
+
+            <!-- Grupo 2 -->
+            <li>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-bank-card-line text-xl"></i>
+                    <span>Pagos</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-alert-line text-xl"></i>
+                    <span>Reclamos</span>
+                </a>
+            </li>
+            <li class="border-t border-gray-700 pt-3">
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-notification-3-line text-xl"></i>
+                    <span>Notificaciones</span>
+                </a>
+            </li>
+
+            <!-- Grupo 3 -->
+            <li>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-user-settings-line text-xl"></i>
+                    <span>Perfil</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-gray-700 transition duration-200">
+                    <i class="ri-question-line text-xl"></i>
+                    <span>Ayuda</span>
+                </a>
+            </li>
+           <li class="border-t border-gray-700 pt-3">
+    <a 
+        href="{% url 'logout' %}" 
+        class="flex items-center space-x-3 p-3 rounded-lg text-red-400 hover:bg-gray-700 hover:text-red-300 transition duration-200"
+    >
+        <i class="ri-logout-circle-line text-xl"></i>
+        <span>Cerrar Sesión</span>
+    </a>
+</li>
+        </ul>
+    </nav>
 
     <!-- Contenido principal -->
-    <main>
-        {% block content %}
-        <h1>Bienvenido a mi proyecto Django</h1>
-        {% endblock %}
-    </main>
+    <div class="flex-1 ml-64"> 
+        <!-- Encabezado -->
+        <header class="bg-white shadow p-4 flex items-center justify-between h-30 rounded-tr-3xl"> 
+            <div class="text-lg font-semibold text-gray-700">
+                {% if user.is_authenticated %}
+                    Bienvenido, {{ user.first_name|default:user.username }}!
+                {% else %}
+                    Bienvenido!
+                {% endif %}
+            </div>
+            <div class="flex space-x-4 items-center">
+                <i class="ri-notification-2-line text-gray-500 text-xl cursor-pointer hover:text-gray-700"></i>
+                <i class="ri-user-3-line text-gray-500 text-xl cursor-pointer hover:text-gray-700"></i>
+            </div>
+        </header>
 
-    <!-- Footer opcional -->
-    <footer>
-        {% block footer %}
-        <p>&copy; {% now "Y" %} Mi Proyecto. Todos los derechos reservados.</p>
-        {% endblock %}
-    </footer>
-
-    <!-- Scripts JS -->
-    <script src="{% static 'js/main.js' %}"></script>
-    {% block scripts_extra %}{% endblock %}
-
+        <!-- Contenido -->
+        <main class="p-6"> 
+            {% block content %}
+            <h1 class="text-2xl font-bold text-gray-800">Contenido del Panel</h1>
+            {% endblock %}
+        </main>
+    </div>
 </body>
 </html>

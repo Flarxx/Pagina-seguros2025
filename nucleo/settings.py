@@ -21,8 +21,7 @@ INSTALLED_APPS = [
     'reclamos',
     'usuarios',
     'crm',
-    'notifiaciones',
-    'axes',  # django-axes para seguridad de login
+    'notifiaciones',    
 ]
 
 # ----------------------------
@@ -36,7 +35,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'axes.middleware.AxesMiddleware',  # bloqueo de intentos fallidos
 ]
 
 ROOT_URLCONF = 'nucleo.urls'
@@ -106,7 +104,6 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Django-axes configuración actualizada (v5.x)
 # ----------------------------
 AUTHENTICATION_BACKENDS = [
-    'axes.backends.AxesStandaloneBackend',  # <- backend correcto
     'django.contrib.auth.backends.ModelBackend',  # backend normal de Django
 ]
 

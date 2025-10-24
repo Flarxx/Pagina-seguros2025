@@ -96,3 +96,17 @@ def editar_perfil(request):
         form = PerfilForm(instance=perfil)
 
     return render(request, 'cliente/editar_perfil.html', {'form': form})
+
+
+
+
+def inicio(request):
+    opciones_seguro = [
+        ('carro', 'Mi carro'),
+        ('familia', 'Mi familia'),
+        ('tienda', 'Mi negocio'),
+        ('casa', 'Mi casa')
+    ]
+    return render(request, 'usuarios/inicio.html', {'opciones_seguro': opciones_seguro})
+
+
