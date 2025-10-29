@@ -1,0 +1,27 @@
+{% extends 'polizas/cliente/layout.html' %}
+
+{% block title %}Adquirir {{ producto.nombre }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow">
+    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ producto.nombre }}</h1>
+    <p class="text-gray-600 mb-4">{{ producto.descripcion }}</p>
+
+    <ul class="list-disc pl-6 mb-4 text-gray-700">
+        {% for key, value in producto.cobertura.items %}
+            <li><strong>{{ key }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+
+    <p class="text-lg font-semibold mb-4">
+        Prima base: <span class="text-blue-600">${{ producto.prima_base }}</span>
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
+            Contratar ahora
+        </button>
+    </form>
+</div>
+{% endblock %}
