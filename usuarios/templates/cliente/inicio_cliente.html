@@ -1,5 +1,6 @@
 {% extends 'polizas/layout.html' %}
 {% block title %}Dashboard de Pólizas{% endblock %}
+
 {% block content %}
     <!-- Título -->
     <h1 class="text-3xl font-bold text-gray-800 mb-4">Resumen Administrativo</h1>
@@ -11,42 +12,67 @@
 
     <!-- 🔹 Tarjetas pequeñas (6 en total) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+
         <!-- Tarjeta 1 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Pólizas Activas</h2>
-            <p class="text-3xl font-bold text-blue-600">0</p>
+            <p class="text-3xl font-bold text-blue-600">
+                {{ perfil.polizas_activas }}
+            </p>
         </div>
 
         <!-- Tarjeta 2 -->
-        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
-            <h2 class="text-lg font-semibold text-gray-700 mb-2">Adquirir Nueva Poliza</h2>
-            <select>
-                <option>Salud</option>
-            </select>
-        </div>
+<div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
+    <h2 class="text-lg font-semibold text-gray-700 mb-2">Adquirir Nueva Póliza</h2>
+    <form action="{% url 'adquirir_poliza' %}" method="get">
+        <select name="tipo" class="border rounded-lg px-3 py-2 w-full focus:ring focus:ring-blue-300">
+            <option disabled selected>Selecciona tipo</option>
+            {% for producto in productos_disponibles %}
+                <option value="{{ producto.tipo }}">{{ producto.nombre }}</option>
+            {% empty %}
+                <option disabled>No hay pólizas disponibles</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="mt-3 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition w-full">
+            Solicitar
+        </button>
+    </form>
+</div>
 
         <!-- Tarjeta 3 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Reclamos Abiertos</h2>
-            <p class="text-3xl font-bold text-red-500">0</p>
+            <p class="text-3xl font-bold text-red-500">
+                {{ perfil.reclamos_abiertos }}
+            </p>
         </div>
 
         <!-- Tarjeta 4 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Pagos Pendientes</h2>
-            <p class="text-3xl font-bold text-red-500">0</p>  
+            <p class="text-3xl font-bold text-red-500">
+                ${{ perfil.pagos_pendientes|floatformat:2 }}
+            </p>
         </div>
 
         <!-- Tarjeta 5 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Cotizaciones Pendientes</h2>
-            <p class="text-3xl font-bold text-purple-500">0</p>
+            <p class="text-3xl font-bold text-purple-500">
+                {{ perfil.cotizaciones.count }}
+            </p>
         </div>
 
         <!-- Tarjeta 6 -->
         <div class="bg-white p-6 rounded-2xl shadow hover:shadow-lg transition">
             <h2 class="text-lg font-semibold text-gray-700 mb-2">Documentos Solicitados Pendientes</h2>
-            <p class="text-3xl font-bold text-indigo-500">0</p>
+            <p class="text-3xl font-bold text-indigo-500">
+                {% if perfil.documento_pendiente %}
+                    1
+                {% else %}
+                    0
+                {% endif %}
+            </p>
         </div>
     </div>
 
@@ -69,7 +95,7 @@
         <!-- Tarjeta grande 2 -->
         <div class="bg-white p-8 rounded-2xl shadow hover:shadow-lg transition h-64 flex flex-col justify-between">
             <div>
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Ultimos movimientos</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Últimos movimientos</h2>
                 <p class="text-gray-600">
                     Revisa las últimas alertas del sistema, actualizaciones y mensajes internos.
                 </p>

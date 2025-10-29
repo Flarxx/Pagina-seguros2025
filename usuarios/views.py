@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import PerfilForm
 from .models import Perfil
+from polizas.models import ProductoPoliza
 
 # ----------------------------
 # Funciones de verificación de rol
@@ -60,11 +61,31 @@ def registro(request):
 # ----------------------------
 # Vistas protegidas por rol
 # ----------------------------
+
+
 @login_required
 @user_passes_test(es_cliente, login_url='/no-autorizado/')
 def inicio_cliente(request):
-    """Inicio para clientes normales"""
-    return render(request, 'cliente/inicio_cliente.html')
+    perfil = request.user.perfil
+    polizas = request.user.polizas.all()  # related_name='polizas'
+
+    # Contadores para las tarjetas
+    polizas_activas = polizas.filter(estado='ACTIVA').count()
+    pagos_pendientes = sum(p.saldo_pendiente() for p in polizas)
+    cotizaciones = request.user.cotizaciones.count()
+
+    # Productos disponibles para el select
+    productos_disponibles = ProductoPoliza.objects.filter(disponible=True)
+
+    return render(request, 'cliente/inicio_cliente.html', {
+        'perfil': perfil,
+        'polizas_activas': polizas_activas,
+        'pagos_pendientes': pagos_pendientes,
+        'cotizaciones': cotizaciones,
+        'productos_disponibles': productos_disponibles,
+    })
+
+
 
 @login_required
 @user_passes_test(es_administrador, login_url='/no-autorizado/')
@@ -82,7 +103,7 @@ def perfil(request):
     return render(request, 'cliente/perfil.html', {'perfil': perfil})
 
 
-@login_required
+
 @login_required
 def editar_perfil(request):
     perfil, created = Perfil.objects.get_or_create(usuario=request.user)
