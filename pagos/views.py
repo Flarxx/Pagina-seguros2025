@@ -3,15 +3,12 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Pago, EmpresaAseguradora
 from polizas.models import Poliza
-from .forms import PagoForm  # la crearemos enseguida
+from .forms import PagoForm
+
 
 @login_required
 def registrar_pago(request, poliza_id):
-    # Solo permite que el cliente acceda a sus propias pólizas
     poliza = get_object_or_404(Poliza, id=poliza_id, cliente=request.user)
-
-    # Si la póliza ya tiene aseguradora asignada, la usamos; sino, mostramos todas
-    aseguradoras = [poliza.aseguradora] if poliza.aseguradora else EmpresaAseguradora.objects.all()
 
     if request.method == 'POST':
         form = PagoForm(request.POST, request.FILES)
@@ -19,16 +16,25 @@ def registrar_pago(request, poliza_id):
             pago = form.save(commit=False)
             pago.poliza = poliza
             pago.fecha_pago = timezone.now().date()
+
+            # Si la póliza tiene aseguradora, la asignamos automáticamente
+            if poliza.aseguradora:
+                pago.aseguradora = poliza.aseguradora
+
             pago.save()
-            return redirect('mis_pagos')  # Redirige a lista de pagos del cliente
+            return redirect('mis_pagos')
     else:
         form = PagoForm()
 
+        # Si la póliza tiene aseguradora, ocultamos el campo en el formulario
+        if poliza.aseguradora:
+            form.fields.pop('aseguradora')
+
     return render(request, 'pagos/registrar_pago.html', {
         'form': form,
-        'poliza': poliza,
-        'aseguradoras': aseguradoras
+        'poliza': poliza
     })
+
 
 
 @login_required
