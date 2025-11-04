@@ -11,6 +11,6 @@ class ProductoPolizaAdmin(admin.ModelAdmin):
 # También puedes registrar Poliza para ver las pólizas adquiridas
 @admin.register(Poliza)
 class PolizaAdmin(admin.ModelAdmin):
-    list_display = ('poliza_numero', 'cliente', 'tipo', 'prima', 'estado', 'fecha_inicio', 'fecha_fin')
-    list_filter = ('tipo', 'estado')
-    search_fields = ('poliza_numero', 'cliente__username')
+    list_display = ('poliza_numero', 'cliente', 'tipo', 'aseguradora', 'prima', 'estado', 'fecha_inicio', 'fecha_fin')
+    list_filter = ('tipo', 'estado', 'aseguradora')
+    search_fields = ('poliza_numero', 'cliente__username', 'aseguradora__nombre')

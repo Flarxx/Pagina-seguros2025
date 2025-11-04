@@ -26,7 +26,6 @@ class Poliza(models.Model):
         ('OCUPANTES_VEHICULOS','Ocupantes de Vehículos'),
         ('TODO_RIESGO_INDUSTRIAL','Todo Riesgo Industrial'),
         ('RESP_PROFESIONAL','Responsabilidad Civil Profesional'),
-        # añade más si hace falta
     ]
 
     ESTADO = [
@@ -38,6 +37,13 @@ class Poliza(models.Model):
     poliza_numero = models.CharField(max_length=50, unique=True, default='P-DEFAULT')
     cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='polizas')
     tipo = models.CharField(max_length=50, choices=TIPOS_POLIZA)
+    aseguradora = models.ForeignKey(
+    'pagos.EmpresaAseguradora',  # referencia por string evita el import circular
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name='polizas'
+)
     sum_insured = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
     prima = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     fecha_inicio = models.DateField(default=timezone.now)
@@ -47,7 +53,7 @@ class Poliza(models.Model):
     agente = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='polizas_asignadas')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    meta = models.JSONField(default=dict, blank=True)  # para coberturas extras u otros datos
+    meta = models.JSONField(default=dict, blank=True)  # Coberturas extras u otros datos
 
     class Meta:
         ordering = ['-created_at']
@@ -65,6 +71,7 @@ class Poliza(models.Model):
 
     def saldo_pendiente(self):
         return self.pagos.filter(pagado=False).aggregate(total=models.Sum('monto'))['total'] or 0
+
     
 class ProductoPoliza(models.Model):
     nombre = models.CharField(max_length=100)

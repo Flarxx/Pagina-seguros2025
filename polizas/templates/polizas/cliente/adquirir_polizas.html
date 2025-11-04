@@ -1,27 +1,68 @@
 {% extends 'polizas/cliente/layout.html' %}
 
-{% block title %}Adquirir {{ producto.nombre }}{% endblock %}
+{% block title %}Adquirir Póliza de {{ producto.tipo }}{% endblock %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow">
-    <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ producto.nombre }}</h1>
-    <p class="text-gray-600 mb-4">{{ producto.descripcion }}</p>
+<div class="max-w-6xl mx-auto bg-white p-8 rounded-2xl shadow">
+    
+    <!-- Sección: Asegurados -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Asegurados</h2>
+    <table class="w-full text-left border mb-6">
+        <thead>
+            <tr class="bg-gray-100 text-gray-700">
+                <th class="p-2">Nombre y Apellido</th>
+                <th class="p-2">Edad</th>
+                <th class="p-2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for asegurado in asegurados %}
+            <tr class="border-b">
+                <td class="p-2">{{ asegurado.nombre }}</td>
+                <td class="p-2">{{ asegurado.edad }} años</td>
+                <td class="p-2">
+                    <a href="#" class="text-blue-600 hover:underline">Modificar</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="p-4 text-center text-gray-500">No hay asegurados registrados</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-    <ul class="list-disc pl-6 mb-4 text-gray-700">
-        {% for key, value in producto.cobertura.items %}
-            <li><strong>{{ key }}:</strong> {{ value }}</li>
-        {% endfor %}
-    </ul>
+    <!-- Botón para agregar asegurado -->
+    <button class="bg-green-600 text-white py-2 px-4 rounded-lg mb-6 hover:bg-green-700 transition">
+        + Agregar asegurado
+    </button>
 
-    <p class="text-lg font-semibold mb-4">
-        Prima base: <span class="text-blue-600">${{ producto.prima_base }}</span>
-    </p>
-
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition">
-            Contratar ahora
-        </button>
-    </form>
+    <!-- Sección: Productos disponibles -->
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">Productos a Cotizar</h2>
+    <table class="w-full text-left border">
+        <thead>
+            <tr class="bg-gray-100 text-gray-700">
+                <th class="p-2">Detalle</th>
+                <th class="p-2">Nombre del Producto</th>
+                <th class="p-2">Prima mínima</th>
+                <th class="p-2 text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+            <tr class="border-b">
+                <td class="p-2">{{ producto.detalle }}</td>
+                <td class="p-2 font-semibold">{{ producto.nombre }}</td>
+                <td class="p-2 text-blue-600 font-bold">Desde USD {{ producto.prima_base }}</td>
+                <td class="p-2 text-center">
+                    <a href="{% url 'cotizar_producto' producto.id %}" 
+                       class="bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 transition">
+                        Cotizar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="p-4 text-center text-gray-500">No hay productos disponibles</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock %}

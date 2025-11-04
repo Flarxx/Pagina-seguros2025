@@ -19,32 +19,26 @@ def catalogo_polizas(request):
 
 @login_required
 def adquirir_poliza(request):
-    """
-    Vista para mostrar la información de un producto y permitir contratarlo.
-    """
     producto_id = request.GET.get('producto')
-
     if not producto_id:
-        # Si no hay producto seleccionado, redirige al catálogo
         return redirect('catalogo_polizas')
 
-    # Traer el producto
     producto = get_object_or_404(ProductoPoliza, id=producto_id)
 
     if request.method == 'POST':
-        # Crear la póliza automáticamente al enviar el formulario
-        Poliza.objects.create(
+        # Aquí podrías recibir la aseguradora seleccionada o asignar una por defecto
+        poliza = Poliza.objects.create(
             poliza_numero=f"P-{timezone.now().strftime('%Y%m%d%H%M%S')}",
             cliente=request.user,
             tipo=producto.tipo,
             prima=producto.prima_base,
             fecha_inicio=timezone.now().date(),
+            aseguradora=producto.aseguradora if hasattr(producto, 'aseguradora') else None
         )
-        return redirect('mis_polizas')
+        # Redirigir al pago
+        return redirect('realizar_pago', poliza_id=poliza.id)
 
-    # Mostrar el formulario vacío (solo botón Contratar)
     form = AdquirirPolizaForm()
-
     return render(request, 'polizas/cliente/adquirir_polizas.html', {
         'producto': producto,
         'form': form
