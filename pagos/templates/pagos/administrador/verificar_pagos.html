@@ -1,0 +1,68 @@
+{% extends 'polizas/cliente/layout.html' %}
+
+
+{% block title %}Verificación de Pagos{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8">
+    <h2 class="text-3xl font-bold text-purple-700 mb-6 text-center">Verificación de Pagos</h2>
+
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="px-4 py-3 rounded {{ message.tags }} bg-green-100 border border-green-400 text-green-700">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <table class="min-w-full text-sm text-gray-700">
+        <thead>
+            <tr class="bg-purple-100 text-purple-700 font-semibold">
+                <th class="py-3 px-4 text-left">Póliza</th>
+                <th class="py-3 px-4 text-left">Cliente</th>
+                <th class="py-3 px-4 text-left">Monto</th>
+                <th class="py-3 px-4 text-left">Método</th>
+                <th class="py-3 px-4 text-left">Estado</th>
+                <th class="py-3 px-4 text-left">Comprobante</th>
+                <th class="py-3 px-4 text-left">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pago in pagos %}
+            <tr class="border-b">
+                <td class="py-2 px-4">{{ pago.poliza.poliza_numero }}</td>
+                <td class="py-2 px-4">{{ pago.poliza.cliente.username }}</td>
+                <td class="py-2 px-4">{{ pago.monto }}</td>
+                <td class="py-2 px-4">{{ pago.metodo }}</td>
+                <td class="py-2 px-4">
+                    {% if pago.estado_pago == 'pendiente' %}
+                        <span class="text-yellow-600 font-semibold">Pendiente</span>
+                    {% elif pago.estado_pago == 'aprobado' %}
+                        <span class="text-green-600 font-semibold">Aprobado</span>
+                    {% else %}
+                        <span class="text-red-600 font-semibold">Rechazado</span>
+                    {% endif %}
+                </td>
+                <td class="py-2 px-4">
+                    {% if pago.comprobante %}
+                        <a href="{{ pago.comprobante.url }}" target="_blank" class="text-blue-500 underline">Ver</a>
+                    {% else %}
+                        <span class="text-gray-400">Sin comprobante</span>
+                    {% endif %}
+                </td>
+                <td class="py-2 px-4">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="pago_id" value="{{ pago.id }}">
+                        <button name="accion" value="aprobar" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Aprobar</button>
+                        <button name="accion" value="rechazar" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 ml-2">Rechazar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'polizas/cliente/layout.html' %}
+
+{% block title %}Adquirir Póliza de {{ producto.tipo }}{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow">
+
+    <h2 class="text-2xl font-bold mb-4">Producto seleccionado</h2>
+    <p><strong>Nombre:</strong> {{ producto.nombre }}</p>
+    <p><strong>Tipo:</strong> {{ producto.tipo }}</p>
+    <p><strong>Prima base:</strong> USD {{ producto.prima_base }}</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" 
+            class="mt-4 bg-purple-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800 transition">
+            Adquirir y continuar al pago
+        </button>
+    </form>
+</div>
+{% endblock %}

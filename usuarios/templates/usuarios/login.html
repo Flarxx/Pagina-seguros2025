@@ -1,0 +1,71 @@
+{% extends 'usuarios/base.html' %}
+{% load static %}
+
+{% block title %}Iniciar Sesión{% endblock %}
+
+{% block content %}
+<div class="flex items-start justify-center min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-5xl w-full flex flex-col md:grid md:grid-cols-2 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200">
+
+    <!-- PANEL IZQUIERDO -->
+    <div class="hidden md:flex flex-col justify-center items-center bg-gradient-to-b from-blue-800 to-blue-900 text-white p-10">
+      <img src="{% static 'img/bienvenido.jpg' %}" alt="Protección" class="w-72 h-72 object-contain mb-6 rounded-xl shadow-md">
+      <h2 class="text-2xl font-bold mb-2">Bienvenido a tu portal</h2>
+      <p class="text-sm text-blue-100 text-center leading-relaxed max-w-sm">
+        Inicia sesión para acceder a tus servicios personalizados, administrar tus pólizas y mantener tus datos seguros.
+      </p>
+    </div>
+
+    <!-- PANEL DERECHO -->
+    <div class="p-10 lg:p-14 w-full space-y-8">
+      <div class="text-center">
+        <h2 class="mt-2 text-3xl font-extrabold text-gray-900">Iniciar Sesión</h2>
+        <p class="mt-2 text-sm text-gray-600">Introduce tus credenciales para continuar</p>
+      </div>
+
+      <form method="POST" action="{% url 'login' %}" class="mt-8 space-y-6">
+        {% csrf_token %}
+
+        <!-- Campo de usuario -->
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 2a4 4 0 100 8 4 4 0 000-8zM2 18a8 8 0 0116 0H2z"/>
+            </svg>
+          </div>
+          <input name="username" type="text" placeholder="Usuario" required
+                 class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition duration-200"
+          />
+        </div>
+
+        <!-- Campo de contraseña -->
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 8a3 3 0 016 0v2h1a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6a1 1 0 011-1h1V8zm3-4a5 5 0 00-5 5v2h10V9a5 5 0 00-5-5z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <input name="password" type="password" placeholder="Contraseña" required
+                 class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-700 transition duration-200"
+          />
+        </div>
+
+        <!-- Botón -->
+        <button type="submit" class="w-full py-3 px-4 rounded-lg bg-blue-700 text-white font-semibold hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 transition duration-200">
+          Ingresar
+        </button>
+
+        <!-- Enlace de registro -->
+        <p class="text-center text-sm text-gray-600 mt-4">
+          ¿No tienes cuenta?
+          <a href="{% url 'registro' %}" class="text-blue-700 font-medium hover:text-blue-900 hover:underline transition">Regístrate aquí</a>
+        </p>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="fixed bottom-0 left-0 w-full bg-white h-35">
+  <!-- Espacio vacío, puedes añadir contenido más tarde -->
+</div>
+</div>
+{% endblock %}

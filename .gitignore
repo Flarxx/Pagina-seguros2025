@@ -1,0 +1,31 @@
+# 🧠 Archivos de Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+
+# 🧩 Entornos virtuales
+venv/
+.env/
+
+# ⚙️ Archivos de configuración locales
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.idea/
+*.vscode/
+
+# 🧱 Node (Frontend)
+node_modules/
+package-lock.json
+
+# 🖼 Archivos compilados o temporales
+*.bak
+*.tmp
+
+# 🧪 Archivos de sistema
+.DS_Store
+Thumbs.db

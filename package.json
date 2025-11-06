@@ -1,0 +1,19 @@
+{
+  "name": "seguros2025",
+  "version": "1.0.0",
+  "description": "\"# Pagina-seguros2025\"",
+  "main": "index.js",
+  "scripts": {
+    "watch": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.16",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.16"
+  },
+  "type": "commonjs"
+}
