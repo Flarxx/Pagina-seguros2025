@@ -63,4 +63,4 @@ def verificar_pagos(request):
         pago.save()
         return redirect('verificar_pagos')
 
-    return render(request, 'pagos/admin/verificar_pagos.html', {'pagos': pagos})
+    return render(request, 'pagos/administrador/verificar_pagos.html', {'pagos': pagos})
