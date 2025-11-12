@@ -131,3 +131,8 @@ def inicio(request):
     return render(request, 'usuarios/inicio.html', {'opciones_seguro': opciones_seguro})
 
 
+
+
+
+
+

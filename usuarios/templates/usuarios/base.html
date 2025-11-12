@@ -1,48 +1,32 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Sistema de Seguros{% endblock %}</title>
-
-    <!-- Tailwind -->
+<head>
     <link href="{% static 'css/output.css' %}" rel="stylesheet" />
 
-    <!-- Swiper -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css"/>
-    <!-- HTMX -->
-    <script
-      src="https://unpkg.com/htmx.org@1.9.10"
-      integrity="sha384-D1Kt99CQGqfP6UZJmgVYg28vEwsKFE9JfRkLOkjXFHLYYsHygB9WsSVi4jw5XpXL"
-      crossorigin="anonymous"
-    ></script>
-
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/preload.js"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/response-targets.js"></script>
 
-    <!-- Font Awesome -->
-    <script
-      src="https://kit.fontawesome.com/a2e0a6a0a0.js"
-      crossorigin="anonymous"
-    ></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
     {% block head_extra %}{% endblock %}
-  </head>
+</head>
 
-  <body class="flex flex-col min-h-screen font-sans antialiased text-gray-800">
-    <!-- Navbar principal -->
+<body class="flex flex-col min-h-screen font-sans antialiased text-gray-800">
     <header class="bg-white sticky top-0 z-50 shadow-sm">
       <div
         class="container mx-auto px-4 py-4 flex flex-wrap items-center justify-between relative"
       >
-        <!-- Enlaces izquierda -->
         <nav
           class="hidden md:flex flex-row md:space-x-6 text-lg md:text-base font-medium order-2 md:order-1"
         >
           <div class="relative">
             <button
               class="block px-3 py-2 text-gray-600 hover:text-green-500 rounded-md transition-colors duration-200 flex items-center text-lg"
+              id="polizas-dropdown-button"
+              onclick="document.getElementById('polizas-mega-menu').classList.toggle('hidden');"
             >
               Nuestras Pólizas
               <svg
@@ -60,10 +44,26 @@
                 ></path>
               </svg>
             </button>
+            
+            <div class="absolute w-max min-w-[1000px] rounded-lg shadow-xl bg-white border border-gray-200 p-4 hidden z-20" id="polizas-mega-menu" role="menu" aria-orientation="vertical" aria-labelledby="polizas-dropdown-button">
+              <h3 class="text-lg font-bold text-gray-700 mb-3 border-b pb-2">Ofrecemos Lo Mejor Para Ti</h3>
+              <div class="grid grid-cols-4 gap-x-6 gap-y-2" role="none">
+            
+                {% for i in "12345678901234567890"|make_list %}
+                  <a
+                    href="/poliza/{{ i }}"
+                    class="block text-sm text-gray-700 hover:bg-green-50 hover:text-green-600 p-1.5 rounded-md transition-colors duration-150"
+                    role="menuitem"
+                  >
+                    <i class="fa-solid fa-shield-halved mr-1 text-green-500"></i> Póliza de Ejemplo {{ i }}
+                  </a>
+                {% endfor %}
+                
+              </div>
+            </div>
           </div>
         </nav>
 
-        <!-- Logo -->
         <div
           class="flex-grow flex justify-center md:flex-grow-0 md:justify-start order-1 md:order-2"
         >
@@ -75,44 +75,21 @@
             />
           </a>
         </div>
-
-        <!-- Botón móvil -->
-        <button
-          class="md:hidden p-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 order-3"
-          hx-on::click="document.getElementById('mobile-menu').classList.toggle('hidden');"
-        >
-          <svg
-            class="h-6 w-6 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            ></path>
-          </svg>
-        </button>
-
-        <!-- Navegación -->
+        
         <div
           class="w-full md:flex md:items-center md:w-auto mt-4 md:mt-0 hidden md:order-3"
           id="mobile-menu"
         >
-          <ul
+            <ul
             class="flex flex-col md:flex-row md:ml-4 mt-4 md:mt-0 space-y-3 md:space-y-0 md:space-x-4"
           >
             {% if user.is_authenticated %}
-            <!-- Bienvenida -->
             <li>
               <span class="block px-3 py-2 text-sm text-gray-600">
                 Bienvenido, {{ user.first_name|default:user.username }}
               </span>
             </li>
 
-            <!-- Panel dinámico -->
             {% if user.is_staff %}
             <li>
               <a
@@ -133,7 +110,6 @@
             </li>
             {% endif %}
 
-            <!-- Logout -->
             <li>
               <a
                 href="{% url 'logout' %}"
@@ -144,7 +120,6 @@
             </li>
 
             {% else %}
-            <!-- No autenticado -->
             <li class="border-purple-600 border-1 rounded-md">
               <a
                 href="#"
@@ -175,97 +150,105 @@
       </div>
     </header>
 
-    <!-- Contenido -->
     <main class="min-h-screen flex flex-col">
       {% block content %}{% endblock %}
     </main>
 
-    <!-- Scripts -->
     {% block scripts_extra %}{% endblock %}
+    <script>
+      // Script para cerrar el menú al hacer clic fuera
+      document.addEventListener('click', function(event) {
+          const dropdown = document.getElementById('polizas-mega-menu');
+          const button = document.getElementById('polizas-dropdown-button');
+          
+          if (dropdown && button && !button.contains(event.target) && !dropdown.contains(event.target)) {
+              dropdown.classList.add('hidden');
+          }
+      });
+    </script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="{% static 'js/base.js' %}"></script>
 
-    <!-- Footer -->
     <footer class="bg-white border-t border-gray-200 mt-16">
-      <div class="max-w-7xl mx-auto px-6 py-10 text-center md:text-left">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div>
-            <h3 class="text-xl font-bold text-purple-700 mb-3">
-              Protegete con tu seguro confiable
-            </h3>
-            <p class="text-gray-600 text-sm">
-              Protegemos lo que más valoras. Pólizas diseñadas para ti y tu
-              familia.
-            </p>
-          </div>
+        <div class="max-w-7xl mx-auto px-6 py-10 text-center md:text-left">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <h3 class="text-xl font-bold text-purple-700 mb-3">
+                Protegete con tu seguro confiable
+              </h3>
+              <p class="text-gray-600 text-sm">
+                Protegemos lo que más valoras. Pólizas diseñadas para ti y tu
+                familia.
+              </p>
+            </div>
 
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700 mb-3">
-              Enlaces útiles
-            </h3>
-            <ul class="space-y-2 text-gray-600 text-sm">
-              <li>
-                <a href="/" class="hover:text-purple-600 transition">Inicio</a>
-              </li>
-              <li>
-                <a href="/registro/" class="hover:text-purple-600 transition"
-                  >Registro</a
-                >
-              </li>
-              <li>
-                <a href="/login/" class="hover:text-purple-600 transition"
-                  >Iniciar sesión</a
-                >
-              </li>
-              <li>
-                <a href="/contacto/" class="hover:text-purple-600 transition"
-                  >Contacto</a
-                >
-              </li>
-            </ul>
-          </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                Enlaces útiles
+              </h3>
+              <ul class="space-y-2 text-gray-600 text-sm">
+                <li>
+                  <a href="/" class="hover:text-purple-600 transition">Inicio</a>
+                </li>
+                <li>
+                  <a href="/registro/" class="hover:text-purple-600 transition"
+                    >Registro</a
+                  >
+                </li>
+                <li>
+                  <a href="/login/" class="hover:text-purple-600 transition"
+                    >Iniciar sesión</a
+                  >
+                </li>
+                <li>
+                  <a href="/contacto/" class="hover:text-purple-600 transition"
+                    >Contacto</a
+                  >
+                </li>
+              </ul>
+            </div>
 
-          <div>
-            <h3 class="text-lg font-semibold text-gray-700 mb-3">
-              Contáctanos
-            </h3>
-            <p class="text-gray-600 text-sm">Tel: +58 000-0000000</p>
-            <p class="text-gray-600 text-sm">Email: info@estarseguros.com</p>
-            <div class="flex justify-center md:justify-start space-x-4 mt-3">
-              <a
-                href="#"
-                class="text-gray-500 hover:text-purple-600 transition"
-                aria-label="Facebook"
-              >
-                <i class="fab fa-facebook text-xl"></i>
-              </a>
-              <a
-                href="#"
-                class="text-gray-500 hover:text-purple-600 transition"
-                aria-label="Instagram"
-              >
-                <i class="fab fa-instagram text-xl"></i>
-              </a>
-              <a
-                href="#"
-                class="text-gray-500 hover:text-purple-600 transition"
-                aria-label="Twitter"
-              >
-                <i class="fab fa-twitter text-xl"></i>
-              </a>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-700 mb-3">
+                Contáctanos
+              </h3>
+              <p class="text-gray-600 text-sm">Tel: +58 000-0000000</p>
+              <p class="text-gray-600 text-sm">Email: info@estarseguros.com</p>
+              <div class="flex justify-center md:justify-start space-x-4 mt-3">
+                <a
+                  href="#"
+                  class="text-gray-500 hover:text-purple-600 transition"
+                  aria-label="Facebook"
+                >
+                  <i class="fab fa-facebook text-xl"></i>
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-500 hover:text-purple-600 transition"
+                  aria-label="Instagram"
+                >
+                  <i class="fab fa-instagram text-xl"></i>
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-500 hover:text-purple-600 transition"
+                  aria-label="Twitter"
+                >
+                  <i class="fab fa-twitter text-xl"></i>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <hr class="my-6 border-gray-300 opacity-40" />
+          <hr class="my-6 border-gray-300 opacity-40" />
 
-        <div class="text-center text-sm text-gray-500">
-          © {% now "Y" %}
-          <span class="font-medium text-purple-700">Estar Seguros</span>. Todos
-          los derechos reservados.
+          <div class="text-center text-sm text-gray-500">
+            © {% now "Y" %}
+            <span class="font-medium text-purple-700">Estar Seguros</span>. Todos
+            los derechos reservados.
+          </div>
         </div>
-      </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
-  </body>
+</body>
 </html>
