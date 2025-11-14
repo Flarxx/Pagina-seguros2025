@@ -1,42 +1,69 @@
-{% extends 'usuarios/base.html' %}
+{% extends 'polizas/cliente/layout.html' %}
 {% block content %}
-<div class="max-w-5xl mx-auto py-10">
-  <h1 class="text-2xl font-bold mb-4">Centro de Ayuda</h1>
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+  <!-- Encabezado -->
+  <div class="text-center mb-12">
+    <h1 class="text-4xl font-bold text-gray-900">Centro de Soporte</h1>
+    <p class="mt-2 text-lg text-gray-600">
+      Encuentra respuestas rápidas a tus preguntas frecuentes o contacta a nuestro equipo de soporte.
+    </p>
+  </div>
 
-  <form method="get" class="mb-6">
-    <input type="text" name="q" value="{{ q }}" placeholder="Buscar en preguntas frecuentes..."
-           class="w-full rounded border px-3 py-2">
-  </form>
+  <!-- Barra de búsqueda -->
+  <div class="max-w-2xl mx-auto mb-10">
+    <form method="get" class="flex">
+      <input type="text" name="q" value="{{ q }}" placeholder="Buscar en preguntas frecuentes..."
+             class="flex-grow border rounded-l-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      <button type="submit" class="bg-blue-700 text-white px-6 py-3 rounded-r-lg hover:bg-blue-800 transition">
+        Buscar
+      </button>
+    </form>
+  </div>
 
-  <div class="grid md:grid-cols-3 gap-6">
-    <div class="md:col-span-2">
-      <h2 class="text-xl font-semibold mb-2">Preguntas frecuentes</h2>
-      <ul class="space-y-3">
-        {% for f in faqs %}
-          <li class="p-4 border rounded hover:shadow">
-            <a href="{% url 'ayuda:faq_detail' f.pk %}" class="font-medium">{{ f.pregunta }}</a>
-            <p class="text-sm text-gray-600 mt-1">{{ f.respuesta|truncatewords:25 }}</p>
-          </li>
-        {% empty %}
-          <p>No hay preguntas frecuentes aún.</p>
-        {% endfor %}
-      </ul>
+  <div class="grid md:grid-cols-3 gap-8">
+    <!-- Sección de FAQs -->
+    <div class="md:col-span-2 space-y-6">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-4">Preguntas frecuentes</h2>
+      {% for f in faqs %}
+        <div class="bg-white border shadow-sm rounded-lg p-6 hover:shadow-lg transition">
+          <a href="{% url 'ayuda:faq_detail' f.pk %}" class="text-lg font-medium text-blue-700 hover:underline">
+            {{ f.pregunta }}
+          </a>
+          <p class="text-gray-600 mt-2">{{ f.respuesta|truncatewords:30 }}</p>
+        </div>
+      {% empty %}
+        <p class="text-gray-500">No hay preguntas frecuentes aún.</p>
+      {% endfor %}
     </div>
 
-    <aside>
-      <h3 class="font-semibold mb-2">Categorías</h3>
-      <ul class="space-y-2">
-        {% for c in categorias %}
-          <li><a href="#" class="text-blue-700 hover:underline">{{ c.nombre }}</a></li>
-        {% endfor %}
-      </ul>
-
-      <div class="mt-6">
-        <a href="#" class="block bg-blue-700 text-white text-center py-2 rounded">Contactar soporte</a>
+    <!-- Panel lateral -->
+    <aside class="space-y-6">
+      <!-- Categorías -->
+      <div>
+        <h3 class="font-semibold text-gray-900 mb-3">Categorías</h3>
+        <ul class="space-y-2">
+          {% for c in categorias %}
+            <li>
+              <a href="#" class="block bg-gray-100 hover:bg-gray-200 rounded px-3 py-2 transition">
+                {{ c.nombre }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
 
-      <div class="mt-3">
-        <a href="#" class="block border text-center py-2 rounded">Crear ticket</a>
+      <!-- Contactar soporte -->
+      <div>
+        <a href="{% url 'ayuda:contacto' %}" class="block w-full text-center bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800 transition">
+          Contactar soporte
+        </a>
+      </div>
+
+      <!-- Crear ticket -->
+      <div>
+        <a href="{% url 'ayuda:crear_ticket' %}" class="block w-full text-center border border-blue-700 text-blue-700 py-3 rounded-lg hover:bg-blue-50 transition">
+          Crear ticket
+        </a>
       </div>
     </aside>
   </div>

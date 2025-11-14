@@ -10,7 +10,7 @@ def ayuda_index(request):
     if q:
         faqs = faqs.filter(pregunta__icontains=q) | faqs.filter(respuesta__icontains=q)
     categorias = CategoriaFAQ.objects.all()
-    return render(request, 'ayuda/index.html', {'faqs': faqs, 'categorias': categorias, 'q': q})
+    return render(request, 'ayuda/cliente/index.html', {'faqs': faqs, 'categorias': categorias, 'q': q})
 
 def faq_detail(request, pk):
     faq = get_object_or_404(FAQ, pk=pk, publicado=True)
@@ -32,7 +32,7 @@ def contacto(request):
             messages.error(request, "Corrige los errores del formulario.")
     else:
         form = ContactoForm()
-    return render(request, 'ayuda/contacto.html', {'form': form})
+    return render(request, 'ayuda/cliente/contacto.html', {'form': form})
 
 @login_required
 def crear_ticket(request):
