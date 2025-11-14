@@ -1,0 +1,44 @@
+{% extends 'usuarios/base.html' %}
+{% block content %}
+<div class="max-w-5xl mx-auto py-10">
+  <h1 class="text-2xl font-bold mb-4">Centro de Ayuda</h1>
+
+  <form method="get" class="mb-6">
+    <input type="text" name="q" value="{{ q }}" placeholder="Buscar en preguntas frecuentes..."
+           class="w-full rounded border px-3 py-2">
+  </form>
+
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="md:col-span-2">
+      <h2 class="text-xl font-semibold mb-2">Preguntas frecuentes</h2>
+      <ul class="space-y-3">
+        {% for f in faqs %}
+          <li class="p-4 border rounded hover:shadow">
+            <a href="{% url 'ayuda:faq_detail' f.pk %}" class="font-medium">{{ f.pregunta }}</a>
+            <p class="text-sm text-gray-600 mt-1">{{ f.respuesta|truncatewords:25 }}</p>
+          </li>
+        {% empty %}
+          <p>No hay preguntas frecuentes aún.</p>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <aside>
+      <h3 class="font-semibold mb-2">Categorías</h3>
+      <ul class="space-y-2">
+        {% for c in categorias %}
+          <li><a href="#" class="text-blue-700 hover:underline">{{ c.nombre }}</a></li>
+        {% endfor %}
+      </ul>
+
+      <div class="mt-6">
+        <a href="#" class="block bg-blue-700 text-white text-center py-2 rounded">Contactar soporte</a>
+      </div>
+
+      <div class="mt-3">
+        <a href="#" class="block border text-center py-2 rounded">Crear ticket</a>
+      </div>
+    </aside>
+  </div>
+</div>
+{% endblock %}

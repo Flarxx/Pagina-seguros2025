@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import PerfilForm
+from .forms import PerfilForm, RegistroForm
 from .models import Perfil
 from polizas.models import ProductoPoliza
 
@@ -48,15 +48,18 @@ def logout_view(request):
     return redirect('login')
 
 def registro(request):
-    """Registro de nuevos usuarios"""
     if request.method == 'POST':
-        username = request.POST['username']
-        email = request.POST['email']
-        password = request.POST['password']
-        User.objects.create_user(username=username, email=email, password=password)
-        messages.success(request, 'Usuario creado correctamente')
-        return redirect('login')
-    return render(request, 'usuarios/registro.html')
+        form = RegistroForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Usuario creado correctamente.")
+            return redirect('login')
+        else:
+            messages.error(request, "Corrige los errores del formulario.")
+    else:
+        form = RegistroForm()
+
+    return render(request, 'usuarios/registro.html', {"form": form})
 
 # ----------------------------
 # Vistas protegidas por rol
