@@ -10,6 +10,6 @@ urlpatterns = [
     path('registro/', views.registro, name='registro'),
     path('perfil/', views.perfil, name='perfil'),
     path('perfil/editar/', views.editar_perfil, name='editar_perfil'),
-    
+    path('perfil/documento/<int:perfil_id>/', views.descargar_documento, name='descargar_documento'),
     
 ]

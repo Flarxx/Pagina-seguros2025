@@ -9,6 +9,8 @@ urlpatterns = [
     path('polizas/', include('polizas.urls')),
     path('pagos/', include('pagos.urls')),
     path('ayuda/', include('ayuda.urls')),
+    path('', include('polizas.api_urls')),
+    path('crm/', include('crm.api_urls')),
 ]
 
 
