@@ -5,6 +5,7 @@ from .models import ProductoPoliza, Poliza , Cotizacion
 from .forms import AdquirirPolizaForm
 from .utils import calcular_prima
 from django.http import JsonResponse
+from crm.models import Interaccion
 
 @login_required
 def catalogo_polizas(request):
@@ -33,6 +34,16 @@ def adquirir_poliza(request):
             fecha_inicio=timezone.now().date(),
             aseguradora=producto.aseguradora if hasattr(producto, 'aseguradora') else None
         )
+
+        # 🔹 Crear la interacción automática en el CRM
+        Interaccion.objects.create(
+            cliente=request.user,
+            poliza=poliza,
+            tipo='EM',  # Email por defecto; puedes cambiar según tu lógica
+            nota=f"adquiriste la póliza de {poliza.tipo}",
+            estado='RE'  # 'Resuelta' por defecto, ajusta según quieras
+        )
+
         # 🔹 Redirigir automáticamente a registrar_pago
         return redirect('registrar_pago', poliza_id=poliza.id)
 
@@ -45,7 +56,7 @@ def adquirir_poliza(request):
 @login_required
 def mis_polizas(request):
     polizas = request.user.polizas.all()
-    return render(request, 'polizas/mis_polizas.html', {'polizas': polizas})
+    return render(request, 'polizas/cliente/mis_polizas.html', {'polizas': polizas})
 
 @login_required
 def cotizar_producto(request, producto_id):
@@ -61,6 +72,42 @@ def cotizar_producto(request, producto_id):
         monto_estimado=monto
     )
     return JsonResponse({"monto_estimado": monto})
+
+
+@login_required
+def renovar_poliza(request, poliza_id):
+    poliza = get_object_or_404(Poliza, id=poliza_id, cliente=request.user)
+    
+    # Solo permitir renovación si está próxima a vencer o vencida
+    if poliza.fecha_fin and poliza.fecha_fin >= timezone.now().date():
+        # Opcional: mostrar mensaje "aún vigente, no se puede renovar"
+        return redirect('mis_polizas')
+
+    # Crear nueva póliza (o actualizar fechas de la existente)
+    nueva_fecha_inicio = timezone.now().date()
+    nueva_fecha_fin = nueva_fecha_inicio.replace(year=nueva_fecha_inicio.year + 1)  # un año de cobertura
+    
+    # Crear una nueva póliza basada en la anterior
+    nueva_poliza = Poliza.objects.create(
+        poliza_numero=f"P-{timezone.now().strftime('%Y%m%d%H%M%S')}",
+        cliente=request.user,
+        tipo=poliza.tipo,
+        prima=poliza.prima,
+        fecha_inicio=nueva_fecha_inicio,
+        fecha_fin=nueva_fecha_fin,
+        aseguradora=poliza.aseguradora
+    )
+
+    # Registrar interacción en CRM
+    Interaccion.objects.create(
+        cliente=request.user,
+        poliza=nueva_poliza,
+        tipo='EM',
+        nota=f"Cliente renovó la póliza de {poliza.tipo}",
+        estado='RE'
+    )
+
+    return redirect('mis_polizas')
 
 
 

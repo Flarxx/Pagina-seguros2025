@@ -9,8 +9,9 @@ urlpatterns = [
     path('polizas/', include('polizas.urls')),
     path('pagos/', include('pagos.urls')),
     path('ayuda/', include('ayuda.urls')),
-    path('', include('polizas.api_urls')),
-    path('crm/', include('crm.api_urls')),
+    path('api/polizas/', include('polizas.api_urls')),   # separar APIs
+    path('api/crm/', include('crm.api_urls')),           # separar APIs
+    path('crm/', include(('crm.urls', 'crm'), namespace='crm')),  # rutas normales del CRM
 ]
 
 
