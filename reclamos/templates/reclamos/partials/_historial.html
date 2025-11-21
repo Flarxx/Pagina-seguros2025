@@ -1,0 +1,19 @@
+<div class="space-y-2">
+  {% if historial %}
+    {% for h in historial %}
+      <div class="border-l-2 border-gray-200 pl-3 py-2">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-sm"><strong>{{ h.get_estado_display }}</strong> • {{ h.fecha|date:"d/m/Y H:i" }}</p>
+            {% if h.nota %}
+              <p class="text-sm text-gray-600 mt-1">{{ h.nota }}</p>
+            {% endif %}
+          </div>
+          <div class="text-xs text-gray-400">{{ h.usuario.username if h.usuario else "Sistema" }}</div>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-sm text-gray-500">No hay historial aún.</p>
+  {% endif %}
+</div>

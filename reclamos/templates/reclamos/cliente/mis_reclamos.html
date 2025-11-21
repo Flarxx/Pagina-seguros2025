@@ -1,0 +1,30 @@
+{% extends "reclamos/base.html" %}
+{% block title %}Mis reclamos{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-bold">Mis reclamos</h1>
+  <div class="flex items-center gap-2">
+    <a href="{% url 'reclamos:crear' %}" class="px-4 py-2 rounded bg-sky-600 text-white">Crear reclamo</a>
+    <button
+      hx-get="{% url 'reclamos:json_recientes' %}?n=6"
+      hx-trigger="click"
+      hx-swap="outerHTML"
+      hx-target="#reclamos-grid"
+      class="px-3 py-2 rounded border text-sm">
+      Actualizar
+    </button>
+  </div>
+</div>
+
+<div id="reclamos-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {% for reclamo in reclamos %}
+    {% include "reclamos/partials/_tarjeta_reclamo.html" with reclamo=reclamo %}
+  {% empty %}
+    <div class="col-span-full p-6 bg-white rounded shadow text-center">
+      No tienes reclamos todavía. <a href="{% url 'reclamos:crear' %}" class="text-sky-600 underline">Crear uno</a>.
+    </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

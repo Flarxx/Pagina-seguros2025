@@ -1,0 +1,14 @@
+<form hx-post="{% url 'reclamos:cambiar_estado' reclamo.pk %}" hx-target="#mensaje-estado" hx-swap="innerHTML">
+  {% csrf_token %}
+  <select name="nuevo_estado" class="form-select w-full">
+    {% for code,label in reclamo._meta.get_field('estado').choices %}
+      <option value="{{ code }}">{{ label }}</option>
+    {% endfor %}
+  </select>
+
+  <textarea name="nota" rows="3" class="form-textarea mt-2 w-full"></textarea>
+  <div class="mt-2 flex justify-end">
+    <button class="px-3 py-1 bg-sky-600 text-white rounded">Cambiar</button>
+  </div>
+</form>
+<div id="mensaje-estado"></div>

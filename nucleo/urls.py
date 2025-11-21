@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/polizas/', include('polizas.api_urls')),   # separar APIs
     path('api/crm/', include('crm.api_urls')),           # separar APIs
     path('crm/', include(('crm.urls', 'crm'), namespace='crm')),  # rutas normales del CRM
+    path('reclamos/', include('reclamos.urls', namespace='reclamos')),
 ]
 
 

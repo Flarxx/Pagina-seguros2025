@@ -1,0 +1,47 @@
+{% extends "reclamos/base.html" %}
+{% block title %}Crear reclamo{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Crear reclamo</h1>
+
+  <form method="post" enctype="multipart/form-data" class="space-y-4 bg-white p-6 rounded shadow">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Póliza</label>
+      {{ form.poliza }}
+      {% if form.poliza.errors %}<p class="text-red-600 text-sm">{{ form.poliza.errors }}</p>{% endif %}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Motivo</label>
+      {{ form.motivo }}
+      {% if form.motivo.errors %}<p class="text-red-600 text-sm">{{ form.motivo.errors }}</p>{% endif %}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Descripción</label>
+      {{ form.descripcion }}
+      {% if form.descripcion.errors %}<p class="text-red-600 text-sm">{{ form.descripcion.errors }}</p>{% endif %}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Prioridad</label>
+      {{ form.prioridad }}
+      {% if form.prioridad.errors %}<p class="text-red-600 text-sm">{{ form.prioridad.errors }}</p>{% endif %}
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700">Evidencia (opcional)</label>
+      {{ form.evidencia }}
+      {% if form.evidencia.errors %}<p class="text-red-600 text-sm">{{ form.evidencia.errors }}</p>{% endif %}
+    </div>
+
+    <div class="flex justify-end">
+      <button type="submit" class="px-4 py-2 bg-sky-600 text-white rounded">Enviar reclamo</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

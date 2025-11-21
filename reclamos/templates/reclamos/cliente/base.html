@@ -1,0 +1,62 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Reclamos{% endblock %}</title>
+
+  <!-- Tailwind (suponiendo que ya lo instalaste y build) -->
+  <link href="{% static 'css/tailwind.css' %}" rel="stylesheet">
+
+  <!-- htmx -->
+  <script src="https://unpkg.com/htmx.org@1.11.0"></script>
+  <!-- Optional: htmx extensions (file-encoding para uploads si necesitas) -->
+  <script src="https://unpkg.com/htmx.org/dist/ext/upload.js"></script>
+
+  <style>
+    /* Pequeños ajustes para badges */
+    .badge { @apply inline-flex items-center px-2 py-0.5 rounded-full text-sm font-medium; }
+  </style>
+
+  {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+  <header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <a href="/" class="text-2xl font-bold text-sky-600">MiSeguros</a>
+        <nav class="hidden md:flex gap-3 text-sm">
+          <a href="{% url 'reclamos:mis_reclamos' %}" class="hover:underline">Mis reclamos</a>
+          <a href="{% url 'reclamos:crear' %}" class="hover:underline">Crear reclamo</a>
+        </nav>
+      </div>
+      <div>
+        {% if user.is_authenticated %}
+          <span class="text-sm text-gray-600">Hola, {{ user.username }}</span>
+        {% else %}
+          <a href="{% url 'login' %}" class="text-sm text-sky-600">Entrar</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    {% if messages %}
+      <div class="space-y-2">
+        {% for m in messages %}
+          <div class="p-3 rounded {{ m.tags|default:'bg-blue-50 text-blue-800' }}">
+            {{ m }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="text-center py-6 text-sm text-gray-500">
+    © {{ now.year }} MiSeguros
+  </footer>
+</body>
+</html>

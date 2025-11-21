@@ -12,6 +12,7 @@ from .forms import PerfilForm, RegistroForm
 from .models import Perfil
 from polizas.models import ProductoPoliza
 from django.conf import settings
+from reclamos.models import Reclamo
 
 
 # =========================================================
@@ -91,6 +92,13 @@ def registro(request):
 #    VISTAS PROTEGIDAS POR ROL (CLIENTE)
 # =========================================================
 
+# Función que comprueba que el usuario sea cliente
+def es_cliente(user):
+    try:
+        return user.perfil.rol == 'client'
+    except Exception:
+        return False
+
 @login_required
 @user_passes_test(es_cliente, login_url='/no-autorizado/')
 def inicio_cliente(request):
@@ -103,12 +111,16 @@ def inicio_cliente(request):
 
     productos_disponibles = ProductoPoliza.objects.filter(disponible=True)
 
+    # 🔹 Reclamos recientes del cliente (últimos 5)
+    reclamos_recientes = Reclamo.objects.filter(cliente=request.user).order_by('-fecha')[:5]
+
     return render(request, 'cliente/inicio_cliente.html', {
         'perfil': perfil,
         'polizas_activas': polizas_activas,
         'pagos_pendientes': pagos_pendientes,
         'cotizaciones': cotizaciones,
         'productos_disponibles': productos_disponibles,
+        'reclamos_recientes': reclamos_recientes,
     })
 
 

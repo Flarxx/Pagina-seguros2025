@@ -1,0 +1,11 @@
+<form id="form-evidencia-{{ reclamo.pk }}" method="post" enctype="multipart/form-data"
+      hx-post="{% url 'reclamos:subir_evidencia' reclamo.pk %}"
+      hx-target="#mensaje-evidencia-{{ reclamo.pk }}"
+      hx-swap="innerHTML">
+  {% csrf_token %}
+  <input type="file" name="evidencia" class="block w-full text-sm" />
+  <div class="mt-2 flex justify-end">
+    <button class="px-3 py-1 bg-sky-600 text-white rounded">Subir evidencia</button>
+  </div>
+</form>
+<div id="mensaje-evidencia-{{ reclamo.pk }}"></div>
