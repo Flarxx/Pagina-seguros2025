@@ -1,4 +1,6 @@
-{% extends "reclamos/base.html" %}
+{% extends "polizas/cliente/layout.html" %}
+{% load reclamo_extras %}  {# Cargar el filtro de colores #}
+
 {% block title %}Reclamo {{ reclamo.codigo }}{% endblock %}
 
 {% block content %}
@@ -13,7 +15,7 @@
         </div>
 
         <div class="text-right">
-          <span class="px-3 py-1 text-xs rounded text-white {{ 'bg-yellow-600' if reclamo.estado == 'PENDIENTE' else 'bg-sky-600' if reclamo.estado == 'EN_PROCESO' else 'bg-green-600' if reclamo.estado == 'APROBADO' else 'bg-red-600' if reclamo.estado == 'RECHAZADO' else 'bg-gray-600' }}">
+          <span class="px-3 py-1 text-xs rounded text-white {{ reclamo.estado|estado_color }}">
             {{ reclamo.get_estado_display }}
           </span>
           <p class="text-xs text-gray-400 mt-1">Prioridad: {{ reclamo.get_prioridad_display }}</p>
@@ -38,14 +40,11 @@
       <h3 class="font-semibold mb-3">Historial</h3>
       {% include "reclamos/partials/_historial.html" with historial=reclamo.historial.all %}
     </div>
-
-    <!-- Mensajes o comentarios (si los implementas) -->
-    {# Aquí podrías incluir mensajes tipo ticket si implementas mensajes en reclamos #}
   </div>
 
   <!-- Columna derecha: acciones -->
   <aside class="space-y-4">
-    <!-- Subir evidencia (htmx) -->
+    <!-- Subir evidencia -->
     <div class="bg-white p-4 rounded shadow">
       <h4 class="font-semibold mb-2">Subir evidencia</h4>
 
@@ -66,7 +65,7 @@
     </div>
 
     <!-- Cambiar estado (solo staff/agent) -->
-    {% if user.is_staff or user|attr:"perfil.rol" == "agent" %}
+    {% if user.is_staff or (user.perfil and user.perfil.rol == "agent") %}
       <div class="bg-white p-4 rounded shadow">
         <h4 class="font-semibold mb-2">Cambiar estado</h4>
 

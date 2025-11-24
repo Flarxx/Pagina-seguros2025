@@ -96,7 +96,8 @@ def crear_reclamo(request):
         if poliza_get:
             initial['poliza'] = poliza_get
         form = ReclamoClienteForm(initial=initial)
-    return render(request, 'reclamos/crear_reclamo.html', {'form': form})
+    return render(request, 'reclamos/cliente/crear_reclamo.html', {'form': form})
+
 
 
 @login_required
@@ -112,7 +113,7 @@ def detalle_reclamo(request, pk):
         'cambiar_estado_form': cambiar_estado_form,
         'is_agent': es_agent(request.user),
     }
-    return render(request, 'reclamos/detalle.html', context)
+    return render(request, 'reclamos/cliente/detalle.html', context)
 
 
 @login_required
