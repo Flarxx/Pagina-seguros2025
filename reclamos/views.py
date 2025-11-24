@@ -6,7 +6,6 @@ from django.views.decorators.http import require_POST, require_GET
 from django.utils import timezone
 from django.contrib import messages
 from django.db import transaction
-
 from .models import Reclamo, HistorialEstado
 from .forms import (
     ReclamoClienteForm, ReclamoStaffForm,
@@ -59,9 +58,16 @@ def es_hx_request(request):
 @login_required
 def mis_reclamos_cliente(request):
     reclamos = Reclamo.objects.filter(cliente=request.user).select_related('poliza', 'asignado_a')
-    # Añade flag si es agent para templates
-    context = {'reclamos': reclamos, 'is_agent': es_agent(request.user)}
-    return render(request, 'reclamos/mis_reclamos.html', context)
+    
+    # estados editables para el cliente
+    estados_editables = ['PENDIENTE', 'EN_PROCESO']
+
+    context = {
+        'reclamos': reclamos,
+        'is_agent': es_agent(request.user),
+        'estados_editables': estados_editables,  # <- pasamos al template
+    }
+    return render(request, 'reclamos/cliente/mis_reclamos.html', context)
 
 
 @login_required

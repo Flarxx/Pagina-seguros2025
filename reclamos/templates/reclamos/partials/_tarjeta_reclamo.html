@@ -1,15 +1,18 @@
-{# expects 'reclamo' and 'user' in context #}
 <div class="bg-white shadow rounded p-4 border">
   <div class="flex justify-between">
     <div>
-      <div class="text-xs text-gray-500">{{ reclamo.fecha|date:"d/m/Y H:i" }} • #{{ reclamo.codigo }}</div>
+      <div class="text-xs text-gray-500">
+        {{ reclamo.fecha|date:"d/m/Y H:i" }} • #{{ reclamo.codigo }}
+      </div>
       <h3 class="font-semibold mt-1">{{ reclamo.motivo|default:"(Sin motivo)" }}</h3>
       <p class="text-sm text-gray-600 mt-2">{{ reclamo.descripcion|truncatechars:120 }}</p>
       <p class="text-xs text-gray-400 mt-2">Póliza: {{ reclamo.poliza.poliza_numero }}</p>
     </div>
     <div class="flex flex-col gap-2">
       <a href="{% url 'reclamos:detalle' reclamo.pk %}" class="px-3 py-1 border rounded text-sm">Ver</a>
-      {% if reclamo.cliente == user and reclamo.estado in ('PENDIENTE','EN_PROCESO') %}
+
+      {# Botón Editar solo si el cliente es dueño y el estado está en la lista de estados_editables #}
+      {% if reclamo.cliente == user and reclamo.estado in estados_editables %}
         <a href="{% url 'reclamos:editar' reclamo.pk %}" class="px-3 py-1 text-sm bg-gray-100 rounded">Editar</a>
       {% endif %}
     </div>
