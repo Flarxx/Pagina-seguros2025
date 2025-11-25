@@ -2,6 +2,8 @@ from django.urls import path, include
 from . import views
 from rest_framework import routers
 from .api_views import ProductoPolizaViewSet, PolizaViewSet
+from .views import cotizaciones_cliente
+from .views import cotizacion_detalle   
 
 app_name = 'polizas'
 # ----------------------------
@@ -21,5 +23,7 @@ urlpatterns = [
     # Incluir las rutas de la API
     path('api/', include(router.urls)),
     path('renovar/<int:poliza_id>/', views.renovar_poliza, name='renovar_poliza'),
+    path("cotizaciones/", cotizaciones_cliente, name="cotizaciones_cliente"),
+    path("cotizacion/<int:pk>/", cotizacion_detalle, name="cotizacion_detalle")
 
 ]

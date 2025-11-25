@@ -13,6 +13,7 @@ from .models import Perfil
 from polizas.models import ProductoPoliza
 from django.conf import settings
 from reclamos.models import Reclamo
+from crm.models import Interaccion
 
 
 # =========================================================
@@ -114,6 +115,9 @@ def inicio_cliente(request):
     # 🔹 Reclamos recientes del cliente (últimos 5)
     reclamos_recientes = Reclamo.objects.filter(cliente=request.user).order_by('-fecha')[:5]
 
+    # 🔹 Última interacción del CRM relacionada con las pólizas del usuario
+    ultima_interaccion = Interaccion.objects.filter(cliente=request.user).order_by('-fecha_creacion').first()
+
     return render(request, 'cliente/inicio_cliente.html', {
         'perfil': perfil,
         'polizas_activas': polizas_activas,
@@ -121,6 +125,7 @@ def inicio_cliente(request):
         'cotizaciones': cotizaciones,
         'productos_disponibles': productos_disponibles,
         'reclamos_recientes': reclamos_recientes,
+        'ultima_interaccion': ultima_interaccion,  # 🔹 Pasamos solo 1
     })
 
 

@@ -59,22 +59,6 @@ def mis_polizas(request):
     return render(request, 'polizas/cliente/mis_polizas.html', {'polizas': polizas})
 
 @login_required
-def cotizar_producto(request, producto_id):
-    producto = ProductoPoliza.objects.get(id=producto_id)
-    edad = int(request.GET.get('edad', 30))
-    cobertura_extra = {"ambulancia": 5, "hospitalizacion": 10}
-    monto = calcular_prima(producto, edad, cobertura_extra)
-    Cotizacion.objects.create(
-        cliente=request.user,
-        producto=producto,
-        edad=edad,
-        cobertura_extra=cobertura_extra,
-        monto_estimado=monto
-    )
-    return JsonResponse({"monto_estimado": monto})
-
-
-@login_required
 def renovar_poliza(request, poliza_id):
     poliza = get_object_or_404(Poliza, id=poliza_id, cliente=request.user)
     
@@ -109,7 +93,42 @@ def renovar_poliza(request, poliza_id):
 
     return redirect('mis_polizas')
 
+@login_required
+def cotizaciones_cliente(request):
+    cotizaciones = Cotizacion.objects.filter(cliente=request.user)
+    return render(request, "polizas/cliente/cotizaciones.html", {
+        "cotizaciones": cotizaciones
+    })
 
+@login_required
+def cotizacion_detalle(request, pk):
+    cotizacion = get_object_or_404(Cotizacion, pk=pk, cliente=request.user)
+    return render(request, "polizas/cliente/cotizacion_detalle.html", {
+        "cotizacion": cotizacion
+    })
+
+
+@login_required
+def cotizar_producto(request, producto_id):
+    producto = get_object_or_404(ProductoPoliza, id=producto_id)
+    edad = int(request.GET.get('edad', 30))  # edad por defecto 30
+    cobertura_extra = {
+        "ambulancia": int(request.GET.get('ambulancia', 0)),
+        "hospitalizacion": int(request.GET.get('hospitalizacion', 0))
+    }
+    
+    monto = calcular_prima(producto, edad, cobertura_extra)
+
+    # Guardamos la cotización en la DB
+    Cotizacion.objects.create(
+        cliente=request.user,
+        producto=producto,
+        edad=edad,
+        cobertura_extra=cobertura_extra,
+        monto_estimado=monto
+    )
+
+    return JsonResponse({"monto_estimado": monto})
 
 
 
