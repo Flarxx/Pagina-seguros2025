@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/crm/', include('crm.api_urls')),           # separar APIs
     path('crm/', include(('crm.urls', 'crm'), namespace='crm')),  # rutas normales del CRM
     path('reclamos/', include('reclamos.urls', namespace='reclamos')),
+    path('chatbot/', include('chat.urls')),
 ]
 
 

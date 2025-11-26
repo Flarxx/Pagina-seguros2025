@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     'usuarios',
     'crm',
     'notifiaciones',
-    'ayuda',     
+    'ayuda', 
+    'chat',    
 ]
 
 # ----------------------------
