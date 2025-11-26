@@ -1,0 +1,70 @@
+{% load static %}
+<div id="chat-widget" class="fixed bottom-4 right-4 z-[100] font-sans">
+
+    <button id="open-chat-btn" 
+            class="bg-blue-700 text-white rounded-full p-4 shadow-xl hover:bg-blue-800 transition-colors duration-300 transform hover:scale-105"
+            aria-label="Abrir Chat de Asistencia">
+        <i class="fa-solid fa-headset h-6 w-6"></i>
+    </button>
+
+    <div id="chat-window" class="hidden w-80 h-96 bg-white border border-gray-300 rounded-xl shadow-2xl flex flex-col absolute bottom-full right-0 mb-3 overflow-hidden">
+        
+        <header class="p-3 bg-blue-700 text-white flex items-center shadow-md">
+            <i class="fa-solid fa-shield-halved h-6 w-6 mr-2 text-white"></i> 
+            <h4 class="font-bold">Asistente de Seguros</h4>
+            <button id="close-chat-btn" class="ml-auto text-white hover:text-gray-200" aria-label="Cerrar Chat">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </header>
+
+        <div id="message-container" class="flex-grow p-3 overflow-y-auto space-y-3" 
+             hx-get="{% url 'cargar_historial_chat' %}" 
+             hx-trigger="load" 
+             hx-swap="innerHTML">
+            </div>
+
+        <form hx-post="{% url 'enviar_mensaje_chat' %}" 
+              hx-target="#message-container" 
+              hx-swap="beforeend" 
+              hx-indicator="#loading-indicator"
+              hx-on::after-request="this.reset(); document.getElementById('message-container').scrollTop = document.getElementById('message-container').scrollHeight;">
+            
+            {% csrf_token %}
+            <div class="flex p-3 border-t border-gray-200">
+                <input type="text" name="user_message" placeholder="¿Tienes dudas sobre tu póliza?" required
+                       class="flex-grow p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-1 focus:ring-blue-500"
+                       autocomplete="off">
+                <button type="submit" class="bg-blue-700 text-white p-2 rounded-r-lg hover:bg-blue-800 transition-colors">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+            <div id="loading-indicator" class="htmx-indicator p-1 text-center text-sm text-gray-500 bg-gray-50 transition duration-300 opacity-0">
+                <i class="fa-solid fa-spinner fa-spin mr-1"></i> El bot está buscando la mejor póliza...
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // JavaScript para manejar el toggle de la ventana del chat
+    document.addEventListener('DOMContentLoaded', function() {
+        const openBtn = document.getElementById('open-chat-btn');
+        const closeBtn = document.getElementById('close-chat-btn');
+        const chatWindow = document.getElementById('chat-window');
+        const msgContainer = document.getElementById('message-container');
+
+        openBtn.addEventListener('click', function() {
+            chatWindow.classList.toggle('hidden');
+            if (!chatWindow.classList.contains('hidden')) {
+                // Desplazar al final al abrir si ya hay contenido
+                if (msgContainer.scrollHeight > msgContainer.clientHeight) {
+                    msgContainer.scrollTop = msgContainer.scrollHeight;
+                }
+            }
+        });
+        
+        closeBtn.addEventListener('click', function() {
+            chatWindow.classList.add('hidden');
+        });
+    });
+</script>

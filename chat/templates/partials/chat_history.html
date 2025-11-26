@@ -1,0 +1,22 @@
+{% load static %}
+{% load humanize %}
+
+{% if not messages %}
+<div class="text-center text-sm text-gray-500 pt-4 px-3">
+    <i class="fa-solid fa-circle-info mr-1 text-blue-500"></i> ¡Hola! Soy tu **Asistente de Seguros**. Pregúntame sobre cotizaciones, pólizas o reclamos.
+</div>
+{% endif %}
+
+{% for msg in messages %}
+    <div class="flex justify-end mb-2">
+        <div class="bg-blue-700 text-white rounded-t-xl rounded-bl-xl p-3 max-w-[85%] shadow-md">
+            <p class="text-sm">{{ msg.message }}</p>
+            </div>
+    </div>
+
+    <div class="flex justify-start mb-2">
+        <div class="bg-gray-200 text-gray-800 rounded-t-xl rounded-br-xl p-3 max-w-[85%] shadow-md">
+            <p class="text-sm">{{ msg.response|safe }}</p>
+            </div>
+    </div>
+{% endfor %}

@@ -47,7 +47,7 @@ def send_message(request):
         'user_message': user_message,
         'bot_response': bot_response,
     }
-    return render(request, 'includes/message_response.html', context)
+    return render(request, 'partials/message_response.html', context)
 
 # 2. VISTA para CARGAR HISTORIAL (GET)
 @require_http_methods(["GET"])
@@ -60,4 +60,4 @@ def load_history(request):
         'messages': messages,
     }
     # Renderiza la plantilla del historial
-    return render(request, 'includes/chat_history.html', context)
+    return render(request, 'partials/chat_history.html', context)

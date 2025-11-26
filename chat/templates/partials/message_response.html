@@ -1,0 +1,13 @@
+{% load static %}
+{% load humanize %} 
+<div class="flex justify-end mb-2">
+    <div class="bg-blue-700 text-white rounded-t-xl rounded-bl-xl p-3 max-w-[85%] shadow-md">
+        <p class="text-sm">{{ user_message }}</p>
+        </div>
+</div>
+
+<div class="flex justify-start mb-2">
+    <div class="bg-gray-200 text-gray-800 rounded-t-xl rounded-br-xl p-3 max-w-[85%] shadow-md">
+        <p class="text-sm">{{ bot_response|safe }}</p>
+        </div>
+</div>
