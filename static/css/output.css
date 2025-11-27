@@ -586,9 +586,6 @@
   .max-w-\[85\%\] {
     max-width: 85%;
   }
-  .max-w-\[240px\] {
-    max-width: 240px;
-  }
   .max-w-\[500px\] {
     max-width: 500px;
   }
@@ -1071,6 +1068,9 @@
   }
   .object-cover {
     object-fit: cover;
+  }
+  .p-0 {
+    padding: calc(var(--spacing) * 0);
   }
   .p-1 {
     padding: calc(var(--spacing) * 1);
