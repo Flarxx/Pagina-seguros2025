@@ -24,7 +24,8 @@ INSTALLED_APPS = [
     'crm',
     'notifiaciones',
     'ayuda', 
-    'chat',    
+    'chat',  
+    'django.contrib.humanize',  
 ]
 
 # ----------------------------

@@ -77,24 +77,52 @@ class Poliza(models.Model):
 class ProductoPoliza(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField()
-    tipo = models.CharField(max_length=50, choices=Poliza.TIPOS_POLIZA)
+    # Asumo que 'Poliza' está disponible en el scope o importado correctamente
+    tipo = models.CharField(max_length=50, choices=Poliza.TIPOS_POLIZA) 
     cobertura = models.JSONField(default=dict, blank=True)
     prima_base = models.DecimalField(max_digits=10, decimal_places=2)
     disponible = models.BooleanField(default=True)
     imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
 
+    # Campos específicos para la Cotización (Tarjeta)
+    nombre_aseguradora = models.CharField(max_length=100, default='Aseguradora X')
+    deducible_dentro_usa = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    deducible_fuera_usa = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    cobertura_maxima = models.DecimalField(max_digits=12, decimal_places=2)
+
+    etiqueta_destacada = models.CharField(
+        max_length=50, 
+        choices=[
+            ('RECOMENDADO', 'Recomendado'), 
+            ('COMPLETO', 'Más Completo'), 
+            ('ALTERNATIVA', 'La Alternativa'),
+            ('MAXIMA', 'Máxima'),
+            ('BUENA_OPCION', 'Buena Opción'),
+            ('-', 'Sin Etiqueta')
+        ],
+        default='-',
+    )
+    
+    prima_desde = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    prima_hasta = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    detalles_extras = models.JSONField(default=dict, blank=True)
+
     def __str__(self):
         return f"{self.nombre} ({self.get_tipo_display()})"
 
 
+# polizas/models.py
 class Cotizacion(models.Model):
-    cliente = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cotizaciones')
-    producto = models.ForeignKey(ProductoPoliza, on_delete=models.CASCADE)
-    edad = models.PositiveIntegerField(null=True, blank=True)
-    cobertura_extra = models.JSONField(default=dict, blank=True)
-    monto_estimado = models.DecimalField(max_digits=10, decimal_places=2)
+    cliente = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='cotizaciones')
+    nombre = models.CharField(max_length=100, blank=True, null=True)
+    telefono = models.CharField(max_length=20, default='0000000000')
+    mail = models.EmailField(default='no_aplica@seguros.com')
+    tipo_poliza = models.CharField(max_length=50, choices=Poliza.TIPOS_POLIZA, default='SALUD')
+    suma_asegurada = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    prima_estimada = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     fecha = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Cotización de {self.cliente.username} - {self.producto.nombre}"
+        return f"Cotización {self.tipo_poliza} - {self.email}"
+
 

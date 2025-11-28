@@ -4,6 +4,8 @@ from rest_framework import routers
 from .api_views import ProductoPolizaViewSet, PolizaViewSet
 from .views import cotizaciones_cliente
 from .views import cotizacion_detalle   
+from .views import cotizar_publico, cotizacion_generada
+
 
 app_name = 'polizas'
 # ----------------------------
@@ -24,6 +26,8 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('renovar/<int:poliza_id>/', views.renovar_poliza, name='renovar_poliza'),
     path("cotizaciones/", cotizaciones_cliente, name="cotizaciones_cliente"),
-    path("cotizacion/<int:pk>/", cotizacion_detalle, name="cotizacion_detalle")
+    path("cotizacion/<int:pk>/", cotizacion_detalle, name="cotizacion_detalle"),
+    path('cotizar/', cotizar_publico, name='cotizar_publico'),
+    path('cotizacion/<int:id>/', cotizacion_generada, name='cotizacion_generada'),
 
 ]

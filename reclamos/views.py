@@ -108,18 +108,40 @@ def crear_reclamo(request):
 
 @login_required
 def detalle_reclamo(request, pk):
-    reclamo = get_object_or_404(Reclamo.objects.select_related('poliza', 'asignado_a'), pk=pk)
+
+    reclamo = get_object_or_404(
+        Reclamo.objects.select_related('poliza', 'asignado_a'),
+        pk=pk
+    )
+
+    # Permisos de visualización
     if not puede_ver_reclamo(request.user, reclamo):
         return HttpResponseForbidden("No tienes permiso para ver este reclamo.")
+
     evidencia_form = EvidenciaForm()
     cambiar_estado_form = CambiarEstadoForm()
+
+    # Obtener choices del campo 'estado' para pasar al template
+    estado_choices = list(Reclamo._meta.get_field('estado').choices)
+
+    # Proteger acceso a perfil (puede que no exista)
+    perfil_rol = None
+    try:
+        perfil_rol = getattr(request.user, 'perfil').rol
+    except Exception:
+        perfil_rol = None
+
     context = {
         'reclamo': reclamo,
         'evidencia_form': evidencia_form,
         'cambiar_estado_form': cambiar_estado_form,
-        'is_agent': es_agent(request.user),
+        'estado_choices': estado_choices,   # usar en template: for code,label in estado_choices
+        'is_agent': es_agent(request.user),  # flag conveniente para el template
+        'perfil_rol': perfil_rol,            # si necesitas comprobar rol directamente
     }
+
     return render(request, 'reclamos/cliente/detalle.html', context)
+
 
 
 @login_required
