@@ -1,0 +1,83 @@
+{% extends 'administrador/prueba.html' %} {# o tu layout admin real #}
+
+{% block title %}Control de Clientes{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto p-6">
+  <h1 class="text-2xl font-bold text-gray-800 mb-4">Panel: Clientes</h1>
+
+  <form method="get" class="mb-4">
+    <div class="flex gap-2">
+      <input type="text" name="q" value="{{ q }}" placeholder="Buscar por cédula, usuario, email o nombre"
+             class="flex-1 px-3 py-2 border rounded shadow-sm" />
+      <button type="submit" class="px-4 py-2 bg-purple-700 text-white rounded">Buscar</button>
+      <a href="{% url 'usuarios:control_clientes' %}" class="px-4 py-2 bg-gray-200 rounded">Limpiar</a>
+    </div>
+  </form>
+
+  <div class="bg-white rounded-lg shadow overflow-x-auto">
+    <table class="min-w-full text-sm">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left">#</th>
+          <th class="px-4 py-3 text-left">Cédula</th>
+          <th class="px-4 py-3 text-left">Cliente</th>
+          <th class="px-4 py-3 text-left">Email</th>
+          <th class="px-4 py-3 text-right">Pólizas</th>
+          <th class="px-4 py-3 text-right">Pagos Pendientes (BS)</th>
+          <th class="px-4 py-3 text-right">Reclamos Activos</th>
+          <th class="px-4 py-3 text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in clientes %}
+        <tr class="border-t">
+          <td class="px-4 py-3">{{ forloop.counter0|add:page_obj.start_index }}</td>
+          <td class="px-4 py-3">{{ item.perfil.cedula|default:"-" }}</td>
+          <td class="px-4 py-3">
+            {{ item.user.get_full_name|default:item.user.username }}
+            <div class="text-xs text-gray-500">ID: {{ item.user.id }}</div>
+          </td>
+          <td class="px-4 py-3">{{ item.user.email }}</td>
+          <td class="px-4 py-3 text-right font-medium">{{ item.polizas_count }}</td>
+          <td class="px-4 py-3 text-right font-medium">{{ item.pagos_pendientes_total|floatformat:2 }}</td>
+          <td class="px-4 py-3 text-right">
+            {% if item.reclamos_abiertos > 0 %}
+              <span class="text-red-600 font-semibold">{{ item.reclamos_abiertos }}</span>
+            {% else %}
+              <span class="text-gray-400">0</span>
+            {% endif %}
+          </td>
+          <td class="px-4 py-3 text-center">
+            <a href="{% url 'polizas:mis_polizas' %}?cliente={{ item.user.id }}" class="text-sm underline">Ver Pólizas</a>
+            <br>
+            <a href="{% url 'pagos:verificar_pagos' %}?cliente={{ item.user.id }}" class="text-sm underline">Ver Pagos</a>
+            <br>
+            <a href="{% url 'reclamos:mis_reclamos' %}?cliente={{ item.user.id }}" class="text-sm underline">Ver Reclamos</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="px-4 py-6 text-center text-gray-500">No se encontraron clientes.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- paginación simple -->
+  <div class="mt-4">
+    <div class="flex items-center justify-between">
+      <div>Mostrando página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</div>
+      <div class="space-x-2">
+        {% if page_obj.has_previous %}
+          <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="px-3 py-1 border rounded">Anterior</a>
+        {% endif %}
+        {% if page_obj.has_next %}
+          <a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="px-3 py-1 border rounded">Siguiente</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,28 +1,39 @@
 import os
 import uuid
-from django.shortcuts import render, redirect
+
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import User
+
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.core.paginator import Paginator
+from django.conf import settings
+
+from django.db.models import Prefetch, Q
+from django.contrib.auth import get_user_model
+
 from .forms import PerfilForm, RegistroForm
 from .models import Perfil
-from polizas.models import ProductoPoliza
-from django.conf import settings
+
+from polizas.models import ProductoPoliza, Poliza
 from reclamos.models import Reclamo
 from crm.models import Interaccion
 
 
 # =========================================================
-#    FUNCIONES DE VERIFICACIÓN DE ROLES
+# FUNCIONES DE VERIFICACIÓN DE ROLES
 # =========================================================
 
 def es_cliente(user):
     """Usuario normal (no staff, no superuser)."""
-    return not user.is_staff and not user.is_superuser
+    try:
+        return user.perfil.rol == 'client'
+    except Exception:
+        return False
 
 
 def es_administrador(user):
@@ -31,7 +42,7 @@ def es_administrador(user):
 
 
 # =========================================================
-#    VISTAS PÚBLICAS
+# VISTAS PÚBLICAS
 # =========================================================
 
 def inicio(request):
@@ -57,9 +68,9 @@ def login_view(request):
             login(request, user)
 
             if es_administrador(user):
-                return redirect('inicio_administrador')
+                return redirect('usuarios:inicio_administrador')
             else:
-                return redirect('inicio_cliente')
+                return redirect('usuarios:inicio_cliente')
         else:
             messages.error(request, 'Usuario o contraseña incorrectos')
 
@@ -69,7 +80,7 @@ def login_view(request):
 def logout_view(request):
     """Cerrar sesión."""
     logout(request)
-    return redirect('login')
+    return redirect('usuarios:login')
 
 
 def registro(request):
@@ -80,7 +91,7 @@ def registro(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Usuario creado correctamente.")
-            return redirect('login')
+            return redirect('usuarios:login')
         else:
             messages.error(request, "Corrige los errores del formulario.")
     else:
@@ -90,15 +101,8 @@ def registro(request):
 
 
 # =========================================================
-#    VISTAS PROTEGIDAS POR ROL (CLIENTE)
+# VISTAS PROTEGIDAS POR ROL (CLIENTE)
 # =========================================================
-
-# Función que comprueba que el usuario sea cliente
-def es_cliente(user):
-    try:
-        return user.perfil.rol == 'client'
-    except Exception:
-        return False
 
 @login_required
 @user_passes_test(es_cliente, login_url='/no-autorizado/')
@@ -112,10 +116,8 @@ def inicio_cliente(request):
 
     productos_disponibles = ProductoPoliza.objects.filter(disponible=True)
 
-    # 🔹 Reclamos recientes del cliente (últimos 5)
     reclamos_recientes = Reclamo.objects.filter(cliente=request.user).order_by('-fecha')[:5]
 
-    # 🔹 Última interacción del CRM relacionada con las pólizas del usuario
     ultima_interaccion = Interaccion.objects.filter(cliente=request.user).order_by('-fecha_creacion').first()
 
     return render(request, 'cliente/inicio_cliente.html', {
@@ -125,12 +127,12 @@ def inicio_cliente(request):
         'cotizaciones': cotizaciones,
         'productos_disponibles': productos_disponibles,
         'reclamos_recientes': reclamos_recientes,
-        'ultima_interaccion': ultima_interaccion,  # 🔹 Pasamos solo 1
+        'ultima_interaccion': ultima_interaccion,
     })
 
 
 # =========================================================
-#    VISTAS PROTEGIDAS POR ROL (ADMIN)
+# VISTAS PROTEGIDAS POR ROL (ADMIN)
 # =========================================================
 
 @login_required
@@ -138,14 +140,11 @@ def inicio_cliente(request):
 def inicio_admin(request):
     return render(request, 'administrador/inicio_admin.html')
 
+
 @login_required
 def descargar_documento(request, perfil_id):
-    try:
-        perfil = Perfil.objects.get(id=perfil_id)
-    except Perfil.DoesNotExist:
-        raise Http404("Perfil no encontrado")
+    perfil = get_object_or_404(Perfil, id=perfil_id)
 
-    # Validación de acceso: solo el dueño o admin
     if request.user != perfil.usuario and not request.user.is_staff:
         return HttpResponse("No autorizado", status=403)
 
@@ -162,8 +161,100 @@ def descargar_documento(request, perfil_id):
         return HttpResponse("Archivo no encontrado", status=404)
 
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def control_clientes(request):
+    q = request.GET.get('q', '').strip()
+
+    perfiles_qs = Perfil.objects.select_related('usuario')
+
+    if q:
+        perfiles_qs = perfiles_qs.filter(
+            Q(cedula__icontains=q) |
+            Q(usuario__username__icontains=q) |
+            Q(usuario__first_name__icontains=q) |
+            Q(usuario__last_name__icontains=q) |
+            Q(usuario__email__icontains=q)
+        )
+
+    perfiles_qs = perfiles_qs.prefetch_related(
+        Prefetch('usuario__polizas', queryset=Poliza.objects.prefetch_related('pagos')),
+        Prefetch('usuario__reclamo_set', queryset=Reclamo.objects.only('id', 'estado'))
+    ).order_by('-id')
+
+    paginator = Paginator(perfiles_qs, 25)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    clientes = []
+
+    for perfil in page_obj.object_list:
+        user = perfil.usuario
+
+        polizas = list(user.polizas.all())
+        polizas_count = len(polizas)
+
+        pagos_pendientes_total = 0
+        for pol in polizas:
+            for pago in getattr(pol, 'pagos', []):
+                if pago.estado_pago == 'pendiente':
+                    pagos_pendientes_total += pago.monto or 0
+
+        reclamos_abiertos = sum(
+            1 for r in getattr(user, 'reclamo_set', []).all()
+            if r.estado in ['PENDIENTE', 'EN_PROCESO']
+        )
+
+        clientes.append({
+            'perfil': perfil,
+            'user': user,
+            'polizas_count': polizas_count,
+            'pagos_pendientes_total': pagos_pendientes_total,
+            'reclamos_abiertos': reclamos_abiertos,
+        })
+
+    context = {
+        'clientes': clientes,
+        'page_obj': page_obj,
+        'q': q,
+    }
+
+    return render(request, 'administrador/control_clientes.html', context)
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def detalle_cliente_admin(request, cliente_id):
+    usuario = get_object_or_404(User, id=cliente_id)
+    perfil = get_object_or_404(Perfil, usuario=usuario)
+
+    polizas = Poliza.objects.filter(cliente=usuario).prefetch_related('pagos')
+    reclamos = Reclamo.objects.filter(cliente=usuario).order_by('-fecha')
+
+    pagos_pendientes = 0
+    pagos_aprobados = 0
+
+    for pol in polizas:
+        for pago in pol.pagos.all():
+            if pago.estado_pago == 'pendiente':
+                pagos_pendientes += pago.monto or 0
+            elif pago.estado_pago == 'aprobado':
+                pagos_aprobados += pago.monto or 0
+
+    context = {
+        'usuario': usuario,
+        'perfil': perfil,
+        'polizas': polizas,
+        'reclamos': reclamos,
+        'pagos_pendientes': pagos_pendientes,
+        'pagos_aprobados': pagos_aprobados,
+    }
+
+    return render(request, 'administrador/detalle_cliente.html', context)
+
+
 # =========================================================
-#    PERFIL DEL USUARIO
+# PERFIL DEL USUARIO
 # =========================================================
 
 @login_required
@@ -201,12 +292,9 @@ def editar_perfil(request):
 
             form.save()
             messages.success(request, "Perfil actualizado correctamente.")
-            return redirect('perfil')
+            return redirect('usuarios:perfil')
 
     else:
         form = PerfilForm(instance=perfil)
 
     return render(request, 'cliente/editar_perfil.html', {'form': form})
-
-
-

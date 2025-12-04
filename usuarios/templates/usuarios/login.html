@@ -23,7 +23,7 @@
         <p class="mt-2 text-sm text-gray-600">Introduce tus credenciales para continuar</p>
       </div>
 
-      <form method="POST" action="{% url 'login' %}" class="mt-8 space-y-6">
+      <form method="POST" action="{% url 'usuarios:login' %}" class="mt-8 space-y-6">
         {% csrf_token %}
 
         <!-- Campo de usuario -->
@@ -58,7 +58,7 @@
         <!-- Enlace de registro -->
         <p class="text-center text-sm text-gray-600 mt-4">
           ¿No tienes cuenta?
-          <a href="{% url 'registro' %}" class="text-blue-700 font-medium hover:text-blue-900 hover:underline transition">Regístrate aquí</a>
+          <a href="{% url 'usuarios:registro' %}" class="text-blue-700 font-medium hover:text-blue-900 hover:underline transition">Regístrate aquí</a>
         </p>
       </form>
     </div>

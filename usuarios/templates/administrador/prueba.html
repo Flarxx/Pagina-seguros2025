@@ -32,7 +32,8 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-purple-900 transition duration-200">
+                <a href="{% url 'usuarios:control_clientes' %}" 
+                   class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-purple-900 transition duration-200">
                     <i class="ri-user-line text-xl"></i>
                     <span>Clientes</span>
                 </a>
@@ -52,7 +53,7 @@
                 </a>
             </li>
             <li>
-                <a href="{% url 'verificar_pagos' %}" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-purple-900 transition duration-200">
+                <a href="{% url 'pagos:verificar_pagos' %}" class="flex items-center space-x-3 p-3 rounded-lg text-gray-100 hover:bg-purple-900 transition duration-200">
                     <i class="ri-check-line text-xl"></i>
                     <span>Verificar Pagos</span>
                 </a>
@@ -88,7 +89,7 @@
 
             <!-- Logout -->
             <li class="border-t border-purple-900 pt-3">
-                <a href="{% url 'logout' %}" class="flex items-center space-x-3 p-3 rounded-lg text-red-400 hover:bg-purple-900 hover:text-red-300 transition duration-200">
+                <a href="{% url 'usuarios:logout' %}" class="flex items-center space-x-3 p-3 rounded-lg text-red-400 hover:bg-purple-900 hover:text-red-300 transition duration-200">
                     <i class="ri-logout-circle-line text-xl"></i>
                     <span>Cerrar Sesión</span>
                 </a>
@@ -119,6 +120,17 @@
             <h1 class="text-2xl font-bold text-gray-800">Panel de Administración</h1>
             {% endblock %}
         </main>
+    </div>
+
+    <!-- Logo Home Link corregido -->
+    <div class="flex-grow flex justify-center md:flex-grow-0 md:justify-start order-1 md:order-2">
+        <a href="{% url 'usuarios:inicio' %}" class="flex items-center">
+            <img
+                src="{% static 'img/logo.png' %}"
+                alt="Logo Estar Seguros"
+                class="h-40 mr-3"
+            />
+        </a>
     </div>
 </body>
 </html>
