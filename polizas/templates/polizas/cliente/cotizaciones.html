@@ -4,6 +4,57 @@
 {% block title %}Cotizaciones - Patricia Trujillo Aseguradora{% endblock %}
 
 {% block content %}
+
+    <!-- MODAL TÉRMINOS Y CONDICIONES DE COTIZACIONES -->
+<div id="modalCotizaciones" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden">
+  <div class="bg-white w-full max-w-2xl mx-4 rounded-lg shadow-lg overflow-hidden">
+
+    <!-- Header -->
+    <div class="px-6 py-4 bg-sky-600 text-white flex justify-between items-center">
+      <h2 class="text-lg font-bold">Términos y Condiciones de las Cotizaciones</h2>
+    </div>
+
+    <!-- Contenido -->
+    <div class="p-6 space-y-3 text-sm text-gray-700 max-h-[70vh] overflow-y-auto">
+
+      <p>Antes de solicitar una cotización, por favor lee y acepta las siguientes condiciones:</p>
+
+      <ol class="list-decimal list-inside space-y-2">
+        <li>La cotización es informativa y no constituye un contrato de seguro.</li>
+        <li>Los precios pueden variar según la información proporcionada y la validación por la aseguradora.</li>
+        <li>Debes proporcionar datos veraces y completos para recibir una cotización correcta.</li>
+        <li>Cada cotización está vinculada a una sola persona o póliza y no puede transferirse.</li>
+        <li>Los descuentos y promociones aplican según términos específicos y pueden cambiar sin previo aviso.</li>
+        <li>La solicitud de cotización no genera obligación de compra de la póliza.</li>
+        <li>La información personal será tratada conforme a la política de privacidad de la aseguradora.</li>
+        <li>Al enviar la solicitud, aceptas recibir comunicaciones relacionadas con la cotización.</li>
+        <li>Las condiciones especiales (edad, antecedentes médicos, tipo de seguro) pueden modificar la cotización final.</li>
+        <li>La aseguradora se reserva el derecho de verificar la información y rechazar solicitudes si no cumple con los requisitos.</li>
+      </ol>
+
+      <div class="flex items-center mt-4">
+        <input type="checkbox" id="aceptoCotizaciones" class="mr-2">
+        <label for="aceptoCotizaciones">He leído y acepto los términos y condiciones</label>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 bg-gray-100 flex justify-end gap-3">
+      <button id="btnCancelarCotizacion" 
+              class="px-4 py-2 bg-gray-400 text-white rounded">
+        Cancelar
+      </button>
+      <button id="btnAceptarCotizacion" disabled
+              class="px-4 py-2 bg-sky-600 text-white rounded opacity-50 cursor-not-allowed">
+        Aceptar y continuar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
     <div class="bg-white">
 
         <div class="relative max-w-7xl mx-auto sm:px-6 md:pt-5 text-center">

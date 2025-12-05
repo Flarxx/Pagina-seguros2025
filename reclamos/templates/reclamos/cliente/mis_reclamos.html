@@ -1,6 +1,58 @@
 {% extends 'polizas/cliente/layout.html' %}
+{% load static %}
 {% block title %}Mis reclamos{% endblock %}
 {% block content %}
+
+
+<!-- MODAL TÉRMINOS Y CONDICIONES -->
+<div id="modalTerminos" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 hidden">
+  <div class="bg-white w-full max-w-2xl mx-4 rounded-lg shadow-lg overflow-hidden">
+
+    <!-- Header -->
+    <div class="px-6 py-4 bg-sky-600 text-white flex justify-between items-center">
+      <h2 class="text-lg font-bold">Términos y Condiciones del Reclamo</h2>
+    </div>
+
+    <!-- Contenido -->
+    <div class="p-6 space-y-3 text-sm text-gray-700 max-h-[70vh] overflow-y-auto">
+
+      <p>Antes de continuar, por favor lea cuidadosamente las siguientes condiciones:</p>
+
+      <ol class="list-decimal list-inside space-y-2">
+        <li>El reclamo debe realizarse dentro de un plazo máximo de <strong>15 días continuos</strong> posteriores al siniestro.</li>
+        <li>Solo se aceptan reclamos de <strong>pólizas activas y sin pagos pendientes</strong>.</li>
+        <li>La información suministrada debe ser <strong>veraz, completa y comprobable</strong>.</li>
+        <li>El envío del formulario <strong>no garantiza la aprobación</strong> del reclamo.</li>
+        <li>Los daños o eventos <strong>anteriores a la contratación</strong> de la póliza no están cubiertos.</li>
+        <li>Se debe adjuntar <strong>evidencia clara y legítima</strong> (fotos, informes, facturas).</li>
+        <li>La aseguradora podrá <strong>verificar, inspeccionar o auditar</strong> la información suministrada.</li>
+        <li>Reclamos generados por <strong>negligencia, uso indebido o actos ilícitos</strong> serán rechazados.</li>
+        <li>Cada evento solo permite <strong>un reclamo único</strong>.</li>
+        <li>El tiempo de respuesta puede variar entre <strong>5 y 30 días hábiles</strong>.</li>
+      </ol>
+
+      <div class="flex items-center mt-4">
+        <input type="checkbox" id="aceptoTerminos" class="mr-2">
+        <label for="aceptoTerminos">He leído y acepto los términos y condiciones</label>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="px-6 py-4 bg-gray-100 flex justify-end gap-3">
+      <a href="{% url 'usuarios:inicio_cliente' %}" class="px-4 py-2 bg-gray-400 text-white rounded">
+        Cancelar
+      </a>
+      <button id="btnContinuar" disabled
+              class="px-4 py-2 bg-sky-600 text-white rounded opacity-50 cursor-not-allowed">
+        Aceptar y continuar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-bold">Mis reclamos</h1>
   <div class="flex items-center gap-2">
@@ -26,4 +78,9 @@
   {% endfor %}
 </div>
 
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script src="{% static 'js/modal-reclamos.js' %}"></script>
 {% endblock %}
