@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MinValueValidator
 
+
+
 class Poliza(models.Model):
     TIPOS_POLIZA = [
         ('SALUD', 'Salud'),
@@ -113,16 +115,34 @@ class ProductoPoliza(models.Model):
 
 # polizas/models.py
 class Cotizacion(models.Model):
-    cliente = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='cotizaciones')
+    cliente = models.ForeignKey(
+        User, null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='cotizaciones'
+    )
+
     nombre = models.CharField(max_length=100, blank=True, null=True)
     telefono = models.CharField(max_length=20, default='0000000000')
-    mail = models.EmailField(default='no_aplica@seguros.com')
-    tipo_poliza = models.CharField(max_length=50, choices=Poliza.TIPOS_POLIZA, default='SALUD')
+    email = models.EmailField(blank=True, null=True)
+
+    tipo_poliza = models.CharField(
+        max_length=50,
+        choices=Poliza.TIPOS_POLIZA,
+        default='SALUD'
+    )
+
     suma_asegurada = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     prima_estimada = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+
     fecha = models.DateTimeField(auto_now_add=True)
+    fecha_expiracion = models.DateTimeField(null=True, blank=True)
+
+    # 🔥 ESTE ES EL CAMPO CLAVE PARA SOPORTAR TODOS LOS TIPOS DE PÓLIZA
+    meta = models.JSONField(default=dict, blank=True)
 
     def __str__(self):
-        return f"Cotización {self.tipo_poliza} - {self.email}"
+        return f"Cotización {self.tipo_poliza} - {self.id}"
+
+
 
 

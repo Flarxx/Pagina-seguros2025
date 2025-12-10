@@ -29,5 +29,4 @@ urlpatterns = [
     path("cotizacion/<int:pk>/", cotizacion_detalle, name="cotizacion_detalle"),
     path('cotizar/', cotizar_publico, name='cotizar_publico'),
     path('cotizacion/<int:id>/', cotizacion_generada, name='cotizacion_generada'),
-
 ]

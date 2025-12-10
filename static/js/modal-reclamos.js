@@ -3,13 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const checkbox = document.getElementById("aceptoTerminos");
     const btn = document.getElementById("btnContinuar");
 
-    if (!modal) {
-        console.log("⚠️ No hay modal en esta página");
-        return;
-    }
-
-    console.log("✅ Modal encontrado, mostrando modal");
-
     // Mostrar modal
     modal.classList.remove("hidden");
     modal.style.display = "flex"; // forzar display flex

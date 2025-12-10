@@ -23,7 +23,7 @@ def registrar_pago(request, poliza_id):
             pago.save()
 
             messages.success(request, "✅ Tu pago fue registrado correctamente y está pendiente de verificación.")
-            return redirect('mis_pagos')
+            return redirect('pagos:mis_pagos')
     else:
         form = PagoForm()
 

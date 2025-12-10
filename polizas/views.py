@@ -9,6 +9,8 @@ from .utils import calcular_prima
 from django.http import JsonResponse
 from crm.models import Interaccion
 import json
+from datetime import timedelta
+
 
 @login_required
 def catalogo_polizas(request):
@@ -48,7 +50,7 @@ def adquirir_poliza(request):
         )
 
         # 🔹 Redirigir automáticamente a registrar_pago
-        return redirect('registrar_pago', poliza_id=poliza.id)
+        return redirect('pagos:registrar_pago', poliza_id=poliza.id)
 
     form = AdquirirPolizaForm()
     return render(request, 'polizas/cliente/adquirir_polizas.html', {
@@ -248,17 +250,10 @@ def cotizar_publico(request):
             tipo_poliza=tipo,
             suma_asegurada=suma_asegurada,
             prima_estimada=prima,
+            fecha_expiracion=timezone.now() + timedelta(days=7),
+            meta={"origen": "publico"}
         )
-
-        # Ver si el email pertenece a un usuario ya registrado
-        from django.contrib.auth.models import User
-        try:
-            user = User.objects.get(email=email)
-            cotizacion.cliente = user
-            cotizacion.save()
-        except User.DoesNotExist:
-            pass
-
+        
         return redirect('cotizacion_generada', id=cotizacion.id)
 
     return render(request, 'polizas/publico/cotizar_publico.html')
